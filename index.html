@@ -19,7 +19,7 @@
             padding: 40px 20px;
         }
 
-        /* GİRİŞ PANELİ TASARIMI (LOGIN FORM) */
+        /* TEK BİR PANELDE KULLANICI ADI VE ŞİFRE TASARIMI */
         #login-overlay {
             position: fixed;
             top: 0;
@@ -32,41 +32,33 @@
             align-items: center;
             z-index: 9999;
         }
-        .login-box {
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        .login-panel {
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
             width: 100%;
-            max-width: 350px;
+            max-width: 340px;
             text-align: center;
         }
-        .login-box h2 {
-            margin-bottom: 20px;
+        .login-panel h2 {
+            margin-top: 0;
+            margin-bottom: 25px;
             color: #2c3e50;
+            font-size: 22px;
         }
-        .input-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #7f8c8d;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        .input-group input {
+        .input-field {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
+            margin-bottom: 15px;
             border: 2px solid #bdc3c7;
             border-radius: 6px;
-            font-size: 16px;
+            font-size: 15px;
             box-sizing: border-box;
             outline: none;
             transition: border-color 0.2s;
         }
-        .input-group input:focus {
+        .input-field:focus {
             border-color: var(--accent-color);
         }
         .login-btn {
@@ -80,7 +72,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: background 0.2s;
-            margin-top: 10px;
+            margin-top: 5px;
         }
         .login-btn:hover {
             background: #357abd;
@@ -88,8 +80,9 @@
         #error-msg {
             color: #e74c3c;
             font-size: 14px;
-            margin-top: 10px;
+            margin-top: 12px;
             display: none;
+            font-weight: bold;
         }
 
         /* ANA SİTE TASARIMI */
@@ -102,7 +95,6 @@
             color: #2c3e50;
             margin-bottom: 5px;
         }
-        
         .info-box {
             background: #2c3e50;
             color: #fff;
@@ -167,17 +159,11 @@
 <body>
 
 <div id="login-overlay">
-    <div class="login-box">
-        <h2>🔒 Giriş Yapın</h2>
-        <div class="input-group">
-            <label for="username">Kullanıcı Adı </label>
-            <input type="text" id="username" placeholder="Kullanıcı adınızı yazın" autocomplete="off">
-        </div>
-        <div class="input-group">
-            <label for="password">Şifre </label>
-            <input type="password" id="password" placeholder="Şifrenizi yazın">
-        </div>
-        <button class="login-btn" onclick="panelGiris Kontrol()">Giriş Yap</button>
+    <div class="login-panel">
+        <h2>🔒 Giriş Paneli</h2>
+        <input type="text" id="username" class="input-field" placeholder="Kullanıcı Adı" autocomplete="off">
+        <input type="password" id="password" class="input-field" placeholder="Şifre">
+        <button class="login-btn" onclick="panelGirisKontrol()">Giriş Yap</button>
         <div id="error-msg">Hatalı kullanıcı adı veya şifre!</div>
     </div>
 </div>
@@ -232,36 +218,25 @@
 </script>
 
 <script>
-    // SHA-256 Kriptolama Fonksiyonu
-    async function sha256(string) {
-        const utf8 = new TextEncoder().encode(string);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', utf8);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    async function panelGirisKontrol() {
-        var kAdi = document.getElementById("username").value;
-        var sifre = document.getElementById("password").value;
+    function panelGirisKontrol() {
+        // Kutulardaki metinleri al ve küçük harfe zorlayarak boşlukları temizle
+        var kAdi = document.getElementById("username").value.trim().toLowerCase();
+        var sifre = document.getElementById("password").value.trim();
         var hataMesaji = document.getElementById("error-msg");
 
-        // Girdileri birleştirip SHA-256 özetini çıkarıyoruz
-        const birlesikVeri = kAdi + ":" + sifre;
-        const veriHash = await sha256(birlesikVeri);
-
-        // Bu hash kodu doğrudan "admin:4380" kombinasyonuna aittir. F12'de şifreniz gözükmez.
-        if (veriHash === "9c6cc3ca35d57b2e3e9f42777b7dbd76378ab93700b0e5155f9da43770f6ef09") {
-            // Bilgiler doğruysa giriş ekranını kaldır ve siteyi göster
+        // Net ve kesin eşleşme kontrolü
+        if (kAdi === "admin" && sifre === "4380") {
+            // Doğruysa paneli kaldır
             document.getElementById("login-overlay").style.display = "none";
             hataMesaji.style.display = "none";
         } else {
-            // Yanlışsa kırmızı hata mesajını göster ve alanları temizle
+            // Yanlışsa hata ver ve şifreyi sıfırla
             hataMesaji.style.display = "block";
             document.getElementById("password").value = "";
         }
     }
 
-    // Şifre kutusundayken Enter tuşuna basılırsa da giriş yapsın
+    // Şifre kutusunda Enter'a basınca otomatik tetikleme
     document.getElementById("password").addEventListener("keyup", function(event) {
         if (event.key === "Enter") {
             panelGirisKontrol();
