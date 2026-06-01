@@ -143,26 +143,44 @@
         });
 </script>
 
-    <script>
-    // Sayfa yüklenmeden önce çalışır ve ekranı kilitler
+   <script>
+    // Giriş yapılana kadar sayfayı gizle
     document.body.style.display = "none";
 
-    function girisKontrol() {
-        var kullaniciAdi = prompt("Lütfen Kullanıcı Adınızı Girin:");
-        var sifre = prompt("Lütfen Şifrenizi Girin:");
+    // SHA-256 Kriptolama Fonksiyonu
+    async function sha256(string) {
+        const utf8 = new TextEncoder().encode(string);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', utf8);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
 
-        // Buraya belirlemek istediğiniz kullanıcı adı ve şifreyi yazın
-        if (kullaniciAdi === "admin" && sifre === "4380") {
-            // Bilgiler doğruysa sayfayı göster
+    async function girisKontrol() {
+        // Tek bir kutuda giriş istenir. Örnek format: admin:123456
+        var girisVerisi = prompt("Giriş bilgilerini 'kullaniciadi:sifre' şeklinde giriniz:");
+
+        if (girisVerisi === null) {
+            window.location.reload();
+            return;
+        }
+
+        // Girilen metnin SHA-256 özetini hesapla
+        const veriHash = await sha256(girisVerisi);
+
+        // KULLANIM KILAVUZU:
+        // Eğer giriş bilginizin "admin:123456" olmasını istiyorsanız, aşağıya direkt admin:123456'nın kriptolu halini yazmalısınız.
+        // Aşağıdaki uzun kod, "admin:123456" metninin SHA-256 kriptolu halidir. F12'de sadece bu görünür.
+        if (veriHash === "462c14041e247496c14175fa2a4f66453fa8448eb3a699c80d4fdb0d07525350") {
+            // Bilgiler doğruysa siteyi aç
             document.body.style.display = "block";
         } else {
-            // Bilgiler yanlışsa uyarı ver ve sayfayı yenileyerek tekrar sor
-            alert("Hatalı kullanıcı adı veya şifre! Erişim engellendi.");
+            // Yanlışsa uyar ve sayfayı yenileyerek tekrar sor
+            alert("Hatalı giriş bilgisi! Erişim engellendi.");
             window.location.reload();
         }
     }
 
-    // Fonksiyonu çalıştır
+    // Sistemi çalıştır
     girisKontrol();
 </script>
 
