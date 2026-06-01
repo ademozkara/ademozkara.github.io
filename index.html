@@ -25,7 +25,30 @@
         h1 {
             text-align: center;
             color: #2c3e50;
+            margin-bottom: 5px;
         }
+        
+        /* IP Bilgisi Alanı Tasarımı */
+        .info-box {
+            background: #2c3e50;
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto 30px auto;
+            font-size: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .info-box span {
+            font-weight: bold;
+            color: #2ecc71;
+            background: rgba(255,255,255,0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: 5px;
+        }
+
         .category-title {
             margin-top: 30px;
             border-bottom: 2px solid var(--accent-color);
@@ -71,7 +94,11 @@
 <body>
 
 <div class="container">
-    <h1>🚀 Hızlı Erişim Panelim</h1>
+    <h1>🚀 Benim Hızlı Erişim Panelim</h1>
+    
+    <div class="info-box">
+        🌐 Bağlantı IP Adresiniz: <span id="ip-address">Yükleniyor...</span>
+    </div>
 
     <h2 class="category-title">💻 İndirilen Uygulamalar</h2>
     <div class="grid">
@@ -103,6 +130,18 @@
         </a>
     </div>
 </div>
+
+<script>
+    fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('ip-address').innerText = data.ip;
+        })
+        .catch(error => {
+            document.getElementById('ip-address').innerText = "Alınamadı";
+            console.error('IP yüklenirken hata oluştu:', error);
+        });
+</script>
 
 </body>
 </html>
