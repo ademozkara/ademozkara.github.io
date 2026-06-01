@@ -143,5 +143,28 @@
         });
 </script>
 
+    <script>
+    // Sayfa yüklenmeden önce çalışır ve ekranı kilitler
+    document.body.style.display = "none";
+
+    function girisKontrol() {
+        var kullaniciAdi = prompt("Lütfen Kullanıcı Adınızı Girin:");
+        var sifre = prompt("Lütfen Şifrenizi Girin:");
+
+        // Buraya belirlemek istediğiniz kullanıcı adı ve şifreyi yazın
+        if (kullaniciAdi === "admin" && sifre === "4380") {
+            // Bilgiler doğruysa sayfayı göster
+            document.body.style.display = "block";
+        } else {
+            // Bilgiler yanlışsa uyarı ver ve sayfayı yenileyerek tekrar sor
+            alert("Hatalı kullanıcı adı veya şifre! Erişim engellendi.");
+            window.location.reload();
+        }
+    }
+
+    // Fonksiyonu çalıştır
+    girisKontrol();
+</script>
+
 </body>
 </html>
