@@ -188,6 +188,12 @@
             <h3>VS Code</h3>
             <p>Kod Editörü</p>
         </a>
+
+        <a href="https://www.libreoffice.org/download/download-libreoffice/" target="_blank" class="card">
+            <div class="icon">📄</div>
+            <h3>LibreOffice</h3>
+            <p>Açık Kaynak Ofis Programı</p>
+        </a>
     </div>
 
     <h2 class="category-title">📂 Sık Kullanılan Dosyalar</h2>
@@ -219,24 +225,19 @@
 
 <script>
     function panelGirisKontrol() {
-        // Kutulardaki metinleri al ve küçük harfe zorlayarak boşlukları temizle
         var kAdi = document.getElementById("username").value.trim().toLowerCase();
         var sifre = document.getElementById("password").value.trim();
         var hataMesaji = document.getElementById("error-msg");
 
-        // Net ve kesin eşleşme kontrolü
         if (kAdi === "admin" && sifre === "4380") {
-            // Doğruysa paneli kaldır
             document.getElementById("login-overlay").style.display = "none";
             hataMesaji.style.display = "none";
         } else {
-            // Yanlışsa hata ver ve şifreyi sıfırla
             hataMesaji.style.display = "block";
             document.getElementById("password").value = "";
         }
     }
 
-    // Şifre kutusunda Enter'a basınca otomatik tetikleme
     document.getElementById("password").addEventListener("keyup", function(event) {
         if (event.key === "Enter") {
             panelGirisKontrol();
