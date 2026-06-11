@@ -199,6 +199,7 @@
 </head>
 <body>
 
+<!-- GİRİŞ EKRANI -->
 <div id="login-overlay">
     <div class="login-panel">
         <h2>[ SECURE_AUTH ]</h2>
@@ -209,6 +210,7 @@
     </div>
 </div>
 
+<!-- SİTE İÇERİĞİ -->
 <div class="container">
     <h1> root@C2-Console:~# ./panel.sh</h1>
     
@@ -242,10 +244,11 @@
             <p>Gelişmiş sızma testi ve siber güvenlik OS.</p>
         </a>
 
-        <a href="https://www.vmware.com/products/desktop-hypervisors/workstation-and-fusion" target="_blank" class="card">
+        <!-- DİREKT DRIVE İNDİRME LİNKİ ENTEGRE EDİLMİŞ VMWARE KARTI -->
+        <a href="https://docs.google.com/uc?export=download&id=1bbRk2Lt4OFr1NksBb-5wA1gaBDs7rpVd" class="card">
             <div class="icon">🖥️</div>
             <h3>VMware Workstation</h3>
-            <p>Sanal laboratuvar ve izole test ortamı hipervizörü.</p>
+            <p>Kişisel Drive sunucusundan direkt setup paketini indir.</p>
         </a>
     </div>
 
@@ -280,6 +283,7 @@
     </div>
 </div>
 
+<!-- IP Adresini Çeken Kod -->
 <script>
     fetch('https://api.ipify.org?format=json')
         .then(response => response.json())
@@ -291,6 +295,7 @@
         });
 </script>
 
+<!-- GİRİŞ KONTROLÜ -->
 <script>
     function panelGirisKontrol() {
         var kAdi = document.getElementById("username").value.trim().toLowerCase();
