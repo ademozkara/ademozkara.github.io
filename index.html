@@ -198,6 +198,7 @@
 </head>
 <body>
 
+<!-- GİRİŞ EKRANI -->
 <div id="login-overlay">
     <div class="login-panel">
         <h2>[ SECURE_AUTH ]</h2>
@@ -208,6 +209,7 @@
     </div>
 </div>
 
+<!-- PANEL İÇERİĞİ -->
 <div class="container">
     <h1> root@C2-Console:~# ./global_toolkit.sh</h1>
     
@@ -215,6 +217,22 @@
         [SYS_INFO] Target_Public_IP: <span id="ip-address">Sorgulanıyor...</span>
     </div>
 
+    <!-- 1. KATEGORİ: VULNERABILITY & EXPLOITATION -->
+    <h2 class="category-title">> Vulnerability_&_Exploitation</h2>
+    <div class="grid">
+        <a href="https://portswigger.net/burp/communitydownload" target="_blank" class="card">
+            <div class="icon">☕</div>
+            <h3>Burp Suite CE</h3>
+            <p>Web uygulama güvenliği testleri ve HTTP trafik manipülasyon aracı.</p>
+        </a>
+        <a href="https://github.com/rapid7/metasploit-framework/wiki/Nightly-Installers" target="_blank" class="card">
+            <div class="icon">☠️</div>
+            <h3>Metasploit</h3>
+            <p>Gelişmiş sızma testi, zafiyet sömürme ve exploit kütüphanesi.</p>
+        </a>
+    </div>
+
+    <!-- 2. KATEGORİ: NETWORK & ANALYSIS -->
     <h2 class="category-title">> Network_&_Analysis</h2>
     <div class="grid">
         <a href="https://www.wireshark.org/download.html" target="_blank" class="card">
@@ -232,8 +250,29 @@
             <h3>Advanced IP Scanner</h3>
             <p>Hızlı ve güvenilir yerel ağ (LAN) tarayıcı yazılımı.</p>
         </a>
+        <a href="https://angryip.org/download/#windows" target="_blank" class="card">
+            <div class="icon">😡</div>
+            <h3>Angry IP Scanner</h3>
+            <p>Açık kaynaklı, hızlı ve multiplatform IP/Port tarayıcı.</p>
+        </a>
+        <a href="https://www.nirsoft.net/utils/multiple_ping_tool.html" target="_blank" class="card">
+            <div class="icon">📊</div>
+            <h3>PingInfoView</h3>
+            <p>Aynı anda yüzlerce IP adresini anlık olarak pingleyen IT aracı.</p>
+        </a>
     </div>
 
+    <!-- 3. KATEGORİ: FORENSIC & LOG ANALYSIS -->
+    <h2 class="category-title">> Forensic_&_Log_Analysis</h2>
+    <div class="grid">
+        <a href="https://gchq.github.io/CyberChef/" target="_blank" class="card">
+            <div class="icon">👨‍🍳</div>
+            <h3>CyberChef</h3>
+            <p>GCHQ onaylı; veri kriptolama, encode/decode ve log ayrıştırma merkezi.</p>
+        </a>
+    </div>
+
+    <!-- 4. KATEGORİ: REMOTE & TERMINAL -->
     <h2 class="category-title">> Remote_&_Terminal_Management</h2>
     <div class="grid">
         <a href="https://www.putty.org/" target="_blank" class="card">
@@ -263,6 +302,27 @@
         </a>
     </div>
 
+    <!-- 5. KATEGORİ: CREDENTIAL & SYS MANAGEMENT -->
+    <h2 class="category-title">> Credential_&_Sys_Management</h2>
+    <div class="grid">
+        <a href="https://bitwarden.com/download/" target="_blank" class="card">
+            <div class="icon">🔑</div>
+            <h3>Bitwarden</h3>
+            <p>Açık kaynaklı, şifreli kurumsal parola ve kimlik kasası.</p>
+        </a>
+        <a href="https://rufus.ie/tr/" target="_blank" class="card">
+            <div class="icon">💾</div>
+            <h3>Rufus</h3>
+            <p>Önyüklenebilir (bootable) USB medya oluşturma yazılımı.</p>
+        </a>
+        <a href="https://www.revouninstaller.com/revo-uninstaller-free-download/" target="_blank" class="card">
+            <div class="icon">🧼</div>
+            <h3>Revo Uninstaller</h3>
+            <p>Kayıt defteri (registry) kalıntılarını temizleyen gelişmiş kaldırıcı.</p>
+        </a>
+    </div>
+
+    <!-- 6. KATEGORİ: OPERATING SYSTEMS -->
     <h2 class="category-title">> Operating_Systems_&_Hypervisors</h2>
     <div class="grid">
         <a href="https://docs.google.com/uc?export=download&id=1bbRk2Lt4OFr1NksBb-5wA1gaBDs7rpVd" class="card">
@@ -287,6 +347,7 @@
         </a>
     </div>
 
+    <!-- 7. KATEGORİ: DATABASE ENGINES -->
     <h2 class="category-title">> Database_Engines</h2>
     <div class="grid">
         <a href="https://www.microsoft.com/en-us/sql-server/sql-server-downloads" target="_blank" class="card">
@@ -301,6 +362,7 @@
         </a>
     </div>
 
+    <!-- 8. KATEGORİ: DEPLOYMENT TOOLKITS -->
     <h2 class="category-title">> Deployment_Toolkits_&_Storages</h2>
     <div class="grid">
         <a href="https://www.win-rar.com/postdownload.html" target="_blank" class="card">
@@ -331,6 +393,7 @@
     </div>
 </div>
 
+<!-- IP Adresini Çeken Kod -->
 <script>
     fetch('https://api.ipify.org?format=json')
         .then(response => response.json())
@@ -342,6 +405,7 @@
         });
 </script>
 
+<!-- GİRİŞ KONTROLÜ -->
 <script>
     function panelGirisKontrol() {
         var kAdi = document.getElementById("username").value.trim().toLowerCase();
