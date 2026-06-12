@@ -158,6 +158,7 @@
             display: block;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
         .card:hover {
             border-color: var(--accent-glow);
@@ -268,7 +269,7 @@
         <a href="https://www.nirsoft.net/utils/multiple_ping_tool.html" target="_blank" class="card">
             <div class="icon">📊</div>
             <h3>PingInfoView</h3>
-            <p>Aynı anda yüzlerce IP adresini anlık olarak pingleyen IT aracı.</p>
+            <p>Aynı onda yüzlerce IP adresini anlık olarak pingleyen IT aracı.</p>
         </a>
     </div>
 
@@ -286,7 +287,7 @@
         <a href="https://www.putty.org/" target="_blank" class="card">
             <div class="icon">📟</div>
             <h3>PuTTY</h3>
-            <p>SSH, Telnet ve seri port bağlantı terminali.</p>
+            <p>SSH, Telnet và seri port bağlantı terminali.</p>
         </a>
         <a href="https://mobaxterm.mobatek.net/download.html" target="_blank" class="card">
             <div class="icon">🚀</div>
@@ -372,7 +373,7 @@
         <a href="https://crystalmark.info/en/software/crystaldiskinfo/" target="_blank" class="card">
             <div class="icon">🩺</div>
             <h3>CrystalDiskInfo</h3>
-            <p>SSD/HDD disk sağlık durumları, ömür và sıcaklık teşhis takibi.</p>
+            <p>SSD/HDD disk sağlık durumları, ömür ve sıcaklık teşhis takibi.</p>
         </a>
         <a href="https://www.cpuid.com/softwares/hwmonitor.html" target="_blank" class="card">
             <div class="icon">🌡️</div>
@@ -427,16 +428,17 @@
             <p>Google Drive güvenli uzak yedekleme dizini.</p>
         </a>
         
-        <a href="javascript:void(0);" onclick="document.getElementById('login-overlay').style.display='none';" class="card">
+        <div onclick="yerelKlasorAc()" class="card">
             <div class="icon">🗂️</div>
             <h3>Local_Repo</h3>
             <p>Yerel veri havuzu ve profil dizini (C:\yedek).</p>
-        </a>
-        <a href="/el_terminali.txt" target="_blank" class="card">
+        </div>
+
+        <div onclick="yerelDosyaAc()" class="card">
             <div class="icon">📱</div>
             <h3>Hand_Terminal</h3>
             <p>Active Directory, Ağ ve Windows komutları hızlı başvuru rehberi.</p>
-        </a>
+        </div>
     </div>
 </div>
 
@@ -452,6 +454,17 @@
 </script>
 
 <script>
+    // Giriş panelini bozmadan doğrudan Python'un listelediği dizine yönlendirir
+    function yerelKlasorAc() {
+        window.open(window.location.origin + '/', '_blank');
+    }
+
+    // Klasör içindeki dosyayı uzantı çakışması olmadan nokta atışı yeni sekmede açar
+    function yerelDosyaAc() {
+        window.open(window.location.origin + '/el_terminali.txt', '_blank');
+    }
+
+    // GİRİŞ KONTROLÜ
     function panelGirisKontrol() {
         var kAdi = document.getElementById("username").value.trim().toLowerCase();
         var sifre = document.getElementById("password").value.trim();
