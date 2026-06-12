@@ -199,7 +199,6 @@
 </head>
 <body>
 
-<!-- GİRİŞ EKRANI -->
 <div id="login-overlay">
     <div class="login-panel">
         <h2>[ SECURE_AUTH ]</h2>
@@ -210,7 +209,6 @@
     </div>
 </div>
 
-<!-- SİTE İÇERİĞİ -->
 <div class="container">
     <h1> root@C2-Console:~# ./panel.sh</h1>
     
@@ -238,17 +236,31 @@
             <p>Açık kaynak dokümantasyon paketi.</p>
         </a>
 
+        <a href="https://docs.google.com/uc?export=download&id=1bbRk2Lt4OFr1NksBb-5wA1gaBDs7rpVd" class="card">
+            <div class="icon">🖥️</div>
+            <h3>VMware Workstation</h3>
+            <p>Kişisel Drive sunucusundan direkt setup paketini indir.</p>
+        </a>
+    </div>
+
+    <h2 class="category-title">> Operating_Systems</h2>
+    <div class="grid">
         <a href="https://www.kali.org/get-kali/" target="_blank" class="card">
             <div class="icon">🐉</div>
             <h3>Kali Linux</h3>
             <p>Gelişmiş sızma testi ve siber güvenlik OS.</p>
         </a>
 
-        <!-- DİREKT DRIVE İNDİRME LİNKİ ENTEGRE EDİLMİŞ VMWARE KARTI -->
-        <a href="https://docs.google.com/uc?export=download&id=1bbRk2Lt4OFr1NksBb-5wA1gaBDs7rpVd" class="card">
-            <div class="icon">🖥️</div>
-            <h3>VMware Workstation</h3>
-            <p>Kişisel Drive sunucusundan direkt setup paketini indir.</p>
+        <a href="https://www.microsoft.com/tr-tr/software-download/windows10ISO" target="_blank" class="card">
+            <div class="icon">🪟</div>
+            <h3>Windows 10 ISO</h3>
+            <p>Active Directory ve istemci sızma test laboratuvar imajı.</p>
+        </a>
+
+        <a href="https://www.microsoft.com/tr-tr/software-download/windows11" target="_blank" class="card">
+            <div class="icon">🪟</div>
+            <h3>Windows 11 ISO</h3>
+            <p>Modern endpoint analizi ve güncel test ortamı imajı.</p>
         </a>
     </div>
 
@@ -283,7 +295,6 @@
     </div>
 </div>
 
-<!-- IP Adresini Çeken Kod -->
 <script>
     fetch('https://api.ipify.org?format=json')
         .then(response => response.json())
@@ -295,7 +306,6 @@
         });
 </script>
 
-<!-- GİRİŞ KONTROLÜ -->
 <script>
     function panelGirisKontrol() {
         var kAdi = document.getElementById("username").value.trim().toLowerCase();
