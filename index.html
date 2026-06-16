@@ -6,12 +6,12 @@
     <title>IT & Cyber Security Command Center // C2-Console</title>
     <style>
         :root {
-            --bg-color: #02040a;
-            --panel-bg: rgba(10, 17, 32, 0.70); /* Daha şeffaf siber arayüz */
+            --bg-color: #05080c; /* Daha derin ve koyu terminal siyahı */
+            --panel-bg: rgba(13, 22, 38, 0.75); /* Net okunurluk için optimize edilmiş fon */
             --text-main: #00ff66; /* Matrix Yeşili */
-            --text-muted: #94a3b8;
+            --text-muted: #8a99ad;
             --accent-glow: #38bdf8; /* Siber Mavi */
-            --border-color: rgba(56, 189, 248, 0.2); /* Hafif mavi siber çerçeve */
+            --border-color: rgba(56, 189, 248, 0.15); /* Göz yormayan hafif çerçeve */
             --alert-red: #f43f5e;
         }
         
@@ -25,7 +25,7 @@
             overflow-x: hidden;
         }
 
-        /* MATRIX DIJITAL YAĞMUR CANVAS'I */
+        /* MATRIX CANVAS (GÖZ DOSTU LOŞ MOD) */
         #matrix-canvas {
             position: fixed;
             top: 0;
@@ -36,7 +36,7 @@
             pointer-events: none;
         }
 
-        /* TÜM İÇERİĞİ CANVAS'IN ÜSTÜNE ÇIKARMA */
+        /* İÇERİK KATMANI */
         .main-wrapper {
             position: relative;
             z-index: 2;
@@ -51,7 +51,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(2, 4, 10, 0.92);
+            background: rgba(5, 8, 12, 0.95);
             backdrop-filter: blur(10px);
             display: flex;
             justify-content: center;
@@ -59,11 +59,11 @@
             z-index: 9999;
         }
         .login-panel {
-            background: rgba(15, 23, 42, 0.9);
+            background: #0d1626;
             padding: 40px;
             border-radius: 4px;
-            border: 2px solid var(--text-main);
-            box-shadow: 0 0 30px rgba(0, 255, 102, 0.3);
+            border: 1px solid var(--text-main);
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.15);
             width: 100%;
             max-width: 350px;
             text-align: center;
@@ -72,17 +72,16 @@
             margin-top: 0;
             margin-bottom: 25px;
             color: var(--text-main);
-            font-size: 20px;
+            font-size: 18px;
             text-transform: uppercase;
             letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
         }
         .input-field {
             width: 100%;
             padding: 12px;
             margin-bottom: 15px;
-            background: #020617;
-            border: 1px solid rgba(56, 189, 248, 0.4);
+            background: #020408;
+            border: 1px solid rgba(56, 189, 248, 0.3);
             border-radius: 4px;
             font-size: 14px;
             color: #fff;
@@ -93,7 +92,6 @@
         }
         .input-field:focus {
             border-color: var(--text-main);
-            box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
         }
         .login-btn {
             width: 100%;
@@ -108,11 +106,10 @@
             cursor: pointer;
             transition: all 0.3s;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
         .login-btn:hover {
-            background: rgba(0, 255, 102, 0.1);
-            box-shadow: 0 0 20px rgba(0, 255, 102, 0.5);
+            background: rgba(0, 255, 102, 0.05);
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
         }
         #error-msg {
             color: var(--alert-red);
@@ -120,7 +117,6 @@
             margin-top: 12px;
             display: none;
             font-weight: bold;
-            text-shadow: 0 0 8px rgba(244, 63, 94, 0.6);
         }
 
         /* ANA PANEL */
@@ -131,10 +127,9 @@
         h1 {
             text-align: center;
             color: var(--text-main);
-            font-size: 28px;
+            font-size: 26px;
             margin-bottom: 5px;
             letter-spacing: 1px;
-            text-shadow: 0 0 15px rgba(0, 255, 102, 0.6);
         }
         
         .info-box {
@@ -146,26 +141,23 @@
             max-width: 500px;
             margin: 0 auto 40px auto;
             font-size: 14px;
-            border: 1px solid rgba(0, 255, 102, 0.3);
-            box-shadow: 0 0 15px rgba(0, 255, 102, 0.1);
-            backdrop-filter: blur(6px);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            backdrop-filter: blur(8px);
         }
         .info-box span {
             font-weight: bold;
             color: var(--accent-glow);
             padding: 2px 6px;
-            text-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
         }
 
         .category-title {
             margin-top: 45px;
-            border-bottom: 1px dashed var(--border-color);
+            border-bottom: 1px dashed rgba(56, 189, 248, 0.2);
             padding-bottom: 8px;
             color: var(--accent-glow);
-            font-size: 18px;
+            font-size: 16px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
         }
         .grid {
             display: grid;
@@ -174,95 +166,87 @@
             margin-top: 20px;
         }
         
-        /* GÖNÜL RAHATLIĞIYLA TIKLANACAK SİBER KARTLAR */
+        /* SADELEŞTİRİLMİŞ SİBER KARTLAR */
         .card {
             background: var(--panel-bg);
-            padding: 22px;
+            padding: 20px;
             border-radius: 4px;
             border: 1px solid var(--border-color);
             text-align: left;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease-in-out;
             text-decoration: none;
             color: inherit;
             display: block;
             position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(6px);
-            box-shadow: inset 0 0 10px rgba(56, 189, 248, 0.05);
+            backdrop-filter: blur(8px);
         }
         
-        /* FARE ÜZERİNE GELDİĞİNDE TETİKLENEN EFSANE SİBER PARLAMA */
+        /* SOFT NEON HOVER */
         .card:hover {
             border-color: var(--text-main);
-            box-shadow: 0 0 20px rgba(0, 255, 102, 0.3), inset 0 0 15px rgba(0, 255, 102, 0.1);
-            transform: translateY(-3px);
+            box-shadow: 0 4px 20px rgba(0, 255, 102, 0.15);
+            transform: translateY(-2px);
         }
         
-        /* Sol şerit efekti */
         .card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
-            width: 3px;
+            width: 2px;
             height: 100%;
-            background: var(--accent-glow);
-            transition: all 0.25s;
+            background: rgba(56, 189, 248, 0.4);
+            transition: all 0.2s;
         }
         .card:hover::before {
             background: var(--text-main);
-            width: 4px;
-            box-shadow: 0 0 10px var(--text-main);
+            box-shadow: 0 0 8px var(--text-main);
         }
 
-        /* Sağ üst köşeye siber durum belirteci */
         .card::after {
-            content: '[READY]';
+            content: '//';
             position: absolute;
             top: 8px;
             right: 12px;
-            font-size: 9px;
-            color: rgba(56, 189, 248, 0.5);
-            font-weight: bold;
-            transition: all 0.25s;
+            font-size: 10px;
+            color: rgba(56, 189, 248, 0.3);
+            font-family: monospace;
+            transition: all 0.2s;
         }
         .card:hover::after {
-            content: '[LAUNCH]';
+            content: '[EXE]';
             color: var(--text-main);
-            text-shadow: 0 0 5px var(--text-main);
         }
 
         .card .icon {
-            font-size: 26px;
-            margin-bottom: 12px;
+            font-size: 24px;
+            margin-bottom: 10px;
             display: inline-block;
-            transition: transform 0.3s;
+            opacity: 0.8;
+            transition: opacity 0.2s;
         }
         .card:hover .icon {
-            transform: scale(1.15);
+            opacity: 1;
         }
 
         .card h3 {
             margin: 0 0 6px 0;
-            font-size: 16px;
+            font-size: 15px;
             color: #fff;
             letter-spacing: 0.5px;
-            transition: color 0.25s;
         }
         .card:hover h3 {
             color: var(--text-main);
-            text-shadow: 0 0 8px rgba(0, 255, 102, 0.5);
         }
 
         .card p {
             margin: 0;
             font-size: 12px;
-            color: #94a3b8;
+            color: #7f8ea3;
             line-height: 1.4;
-            transition: color 0.25s;
         }
         .card:hover p {
-            color: #cbd5e1;
+            color: #94a3b8;
         }
     </style>
 </head>
@@ -282,7 +266,7 @@
     </div>
 
     <div class="container">
-        <h1> root@C2-Console:~# ./global_toolkit.sh _</h1>
+        <h1> root@C2-Console:~# ./global_toolkit.sh</h1>
         
         <div class="info-box">
             [SYS_INFO] Target_Public_IP: <span id="ip-address">Sorgulanıyor...</span>
@@ -494,96 +478,4 @@
                 <h3>LibreOffice</h3>
                 <p>Açık kaynak dokümantasyon ve raporlama paketi.</p>
             </a>
-            <a href="https://drive.google.com/drive/folders/15J6Zr1fbSzyL5UvM99VxRNCnLtNYeow2?usp=drive_link" target="_blank" class="card">
-                <div class="icon">🛡️</div>
-                <h3>Cloud_Backup</h3>
-                <p>Google Drive güvenli uzak yedekleme dizini.</p>
-            </a>
-        </div>
-    </div>
-</div>
-
-<script>
-    fetch('https://api.ipify.org?format=json')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('ip-address').innerText = data.ip;
-        })
-        .catch(error => {
-            document.getElementById('ip-address').innerText = "0.0.0.0 (Offline)";
-        });
-</script>
-
-<script>
-    function panelGirisKontrol() {
-        var kAdi = document.getElementById("username").value.trim().toLowerCase();
-        var sifre = document.getElementById("password").value.trim();
-        var hataMesaji = document.getElementById("error-msg");
-
-        if (kAdi === "admin" && sifre === "4380") {
-            document.getElementById("login-overlay").style.display = "none";
-            hataMesaji.style.display = "none";
-        } else {
-            hataMesaji.style.display = "block";
-            document.getElementById("password").value = "";
-        }
-    }
-
-    document.getElementById("password").addEventListener("keyup", function(event) {
-        if (event.key === "Enter") {
-            panelGirisKontrol();
-        }
-    });
-</script>
-
-<script>
-    const canvas = document.getElementById('matrix-canvas');
-    const ctx = canvas.getContext('2d');
-
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    const binaryChars = ['0', '1'];
-    const fontSize = 14;
-    let columns = canvas.width / fontSize;
-
-    const drops = [];
-    for (let i = 0; i < columns; i++) {
-        drops[i] = Math.random() * -100;
-    }
-
-    function drawMatrix() {
-        ctx.fillStyle = 'rgba(2, 4, 10, 0.06)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.font = fontSize + 'px monospace';
-
-        for (let i = 0; i < drops.length; i++) {
-            const char = binaryChars[Math.floor(Math.random() * binaryChars.length)];
-            const x = i * fontSize;
-            const y = drops[i] * fontSize;
-
-            if (Math.random() > 0.98) {
-                ctx.fillStyle = '#38bdf8'; 
-            } else {
-                ctx.fillStyle = '#00ff66';
-            }
-
-            ctx.fillText(char, x, y);
-
-            if (y > canvas.height && Math.random() > 0.975) {
-                drops[i] = 0;
-            }
-            drops[i]++;
-        }
-    }
-
-    setInterval(drawMatrix, 33);
-</script>
-
-</body>
-</html>
+            <a href="
