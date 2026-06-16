@@ -6,12 +6,13 @@
     <title>IT & Cyber Security Command Center // C2-Console</title>
     <style>
         :root {
-            --bg-color: #05080c;
-            --panel-bg: rgba(13, 22, 38, 0.75);
-            --text-main: #00ff66;
+            --bg-color: #05080c; 
+            --panel-bg: rgba(13, 22, 38, 0.75); 
+            --text-main: #00ff66; /* Matrix Yeşili */
             --text-muted: #8a99ad;
-            --accent-glow: #38bdf8;
-            --border-color: rgba(56, 189, 248, 0.15);
+            --accent-glow: #38bdf8; /* Siber Mavi */
+            --border-color: rgba(56, 189, 248, 0.15); 
+            --alert-red: #f43f5e;
         }
         
         body, html {
@@ -24,6 +25,7 @@
             overflow-x: hidden;
         }
 
+        /* MATRIX CANVAS */
         #matrix-canvas {
             position: fixed;
             top: 0;
@@ -34,6 +36,7 @@
             pointer-events: none;
         }
 
+        /* İÇERİK KATMANI */
         .main-wrapper {
             position: relative;
             z-index: 2;
@@ -60,7 +63,7 @@
             border-radius: 4px;
             text-align: center;
             max-width: 500px;
-            margin: 0 auto 40px auto;
+            margin: 0 auto 30px auto;
             font-size: 14px;
             border: 1px solid rgba(56, 189, 248, 0.2);
             backdrop-filter: blur(8px);
@@ -71,14 +74,55 @@
             padding: 2px 6px;
         }
 
+        /* SİBER KATEGORİ MENÜSÜ */
+        .menu-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+        .menu-btn {
+            background: rgba(13, 22, 38, 0.6);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 10px 16px;
+            font-family: inherit;
+            font-size: 13px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s ease-in-out;
+            text-transform: uppercase;
+        }
+        .menu-btn:hover {
+            color: var(--accent-glow);
+            border-color: var(--accent-glow);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+        }
+        .menu-btn.active {
+            color: var(--text-main);
+            border-color: var(--text-main);
+            background: rgba(0, 255, 102, 0.05);
+            box-shadow: 0 0 12px rgba(0, 255, 102, 0.2);
+            font-weight: bold;
+        }
+
+        /* DİNAMİK KATEGORİ PANELİ */
+        .category-panel {
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .category-panel.active {
+            display: block; /* Seçilince aktif */
+        }
+
         .category-title {
-            margin-top: 45px;
             border-bottom: 1px dashed rgba(56, 189, 248, 0.2);
             padding-bottom: 8px;
             color: var(--accent-glow);
             font-size: 16px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin-top: 0;
         }
         .grid {
             display: grid;
@@ -87,6 +131,7 @@
             margin-top: 20px;
         }
         
+        /* KART TASARIMLARI */
         .card {
             background: var(--panel-bg);
             padding: 20px;
@@ -100,13 +145,11 @@
             position: relative;
             backdrop-filter: blur(8px);
         }
-        
         .card:hover {
             border-color: var(--text-main);
             box-shadow: 0 4px 20px rgba(0, 255, 102, 0.15);
             transform: translateY(-2px);
         }
-        
         .card::before {
             content: '';
             position: absolute;
@@ -121,7 +164,6 @@
             background: var(--text-main);
             box-shadow: 0 0 8px var(--text-main);
         }
-
         .card::after {
             content: '//';
             position: absolute;
@@ -130,24 +172,17 @@
             font-size: 10px;
             color: rgba(56, 189, 248, 0.3);
             font-family: monospace;
-            transition: all 0.2s;
         }
         .card:hover::after {
             content: '[EXE]';
             color: var(--text-main);
         }
-
         .card .icon {
             font-size: 24px;
             margin-bottom: 10px;
             display: inline-block;
             opacity: 0.8;
-            transition: opacity 0.2s;
         }
-        .card:hover .icon {
-            opacity: 1;
-        }
-
         .card h3 {
             margin: 0 0 6px 0;
             font-size: 15px;
@@ -157,15 +192,11 @@
         .card:hover h3 {
             color: var(--text-main);
         }
-
         .card p {
             margin: 0;
             font-size: 12px;
             color: #7f8ea3;
             line-height: 1.4;
-        }
-        .card:hover p {
-            color: #94a3b8;
         }
     </style>
 </head>
@@ -181,218 +212,230 @@
             [SYS_INFO] Target_Public_IP: <span id="ip-address">Sorgulanıyor...</span>
         </div>
 
-        <h2 class="category-title">> Vulnerability_&_Exploitation</h2>
-        <div class="grid">
-            <a href="https://portswigger.net/burp/communitydownload" target="_blank" class="card">
-                <div class="icon">☕</div>
-                <h3>Burp Suite CE</h3>
-                <p>Web uygulama güvenliği testleri ve HTTP trafik manipülasyon aracı.</p>
-            </a>
-            <a href="https://github.com/rapid7/metasploit-framework/wiki/Nightly-Installers" target="_blank" class="card">
-                <div class="icon">☠️</div>
-                <h3>Metasploit</h3>
-                <p>Gelişmiş sızma testi, zafiyet sömürme ve exploit kütüphanesi.</p>
-            </a>
+        <div class="menu-container">
+            <button class="menu-btn active" onclick="switchCategory('vulnerability')">Pentest / Exploits</button>
+            <button class="menu-btn" onclick="switchCategory('network')">Network & Analysis</button>
+            <button class="menu-btn" onclick="switchCategory('remote')">Remote & Terminal</button>
+            <button class="menu-btn" onclick="switchCategory('credential')">Credentials / Sys</button>
+            <button class="menu-btn" onclick="switchCategory('enterprise')">Enterprise Server Labs</button>
+            <button class="menu-btn" onclick="switchCategory('os')">Hypervisors & OS</button>
+            <button class="menu-btn" onclick="switchCategory('hardware')">Hardware Teşhis</button>
+            <button class="menu-btn" onclick="switchCategory('database')">Databases</button>
         </div>
 
-        <h2 class="category-title">> Vulnerable_Targets_&_Labs</h2>
-        <div class="grid">
-            <a href="https://sourceforge.net/projects/metasploitable/" target="_blank" class="card">
-                <div class="icon">🎯</div>
-                <h3>Metasploitable</h3>
-                <p>Sanal lab için bilerek zafiyetli bırakılmış Linux test makinesi.</p>
-            </a>
-            <a href="https://github.com/digininja/DVWA" target="_blank" class="card">
-                <div class="icon">🕸️</div>
-                <h3>DVWA</h3>
-                <p>SQLi, XSS ve kaba kuvvet saldırı pratikleri için zafiyetli web uygulaması.</p>
-            </a>
+        <div id="vulnerability" class="category-panel active">
+            <h2 class="category-title">> Vulnerability, Exploitation & Labs</h2>
+            <div class="grid">
+                <a href="https://portswigger.net/burp/communitydownload" target="_blank" class="card">
+                    <div class="icon">☕</div>
+                    <h3>Burp Suite CE</h3>
+                    <p>Web uygulama güvenliği testleri ve HTTP trafik manipülasyon aracı.</p>
+                </a>
+                <a href="https://github.com/rapid7/metasploit-framework/wiki/Nightly-Installers" target="_blank" class="card">
+                    <div class="icon">☠️</div>
+                    <h3>Metasploit</h3>
+                    <p>Gelişmiş sızma testi, zafiyet sömürme ve exploit kütüphanesi.</p>
+                </a>
+                <a href="https://sourceforge.net/projects/metasploitable/" target="_blank" class="card">
+                    <div class="icon">🎯</div>
+                    <h3>Metasploitable</h3>
+                    <p>Sanal lab için bilerek zafiyetli bırakılmış Linux test makinesi.</p>
+                </a>
+                <a href="https://github.com/digininja/DVWA" target="_blank" class="card">
+                    <div class="icon">🕸️</div>
+                    <h3>DVWA</h3>
+                    <p>SQLi, XSS ve kaba kuvvet saldırı pratikleri için zafiyetli web uygulaması.</p>
+                </a>
+            </div>
         </div>
 
-        <h2 class="category-title">> Network_&_Analysis</h2>
-        <div class="grid">
-            <a href="https://www.wireshark.org/download.html" target="_blank" class="card">
-                <div class="icon">🦈</div>
-                <h3>Wireshark</h3>
-                <p>Derinlemesine paket analizi ve ağ trafiği izleme aracı.</p>
-            </a>
-            <a href="https://nmap.org/download.html" target="_blank" class="card">
-                <div class="icon">🔍</div>
-                <h3>Nmap / Zenmap</h3>
-                <p>Ağ keşfi, port tarama ve zafiyet analiz mekanizması.</p>
-            </a>
-            <a href="https://www.advanced-ip-scanner.com/tr/" target="_blank" class="card">
-                <div class="icon">🌐</div>
-                <h3>Advanced IP Scanner</h3>
-                <p>Hızlı ve güvenilir yerel ağ (LAN) tarayıcı yazılımı.</p>
-            </a>
-            <a href="https://angryip.org/download/#windows" target="_blank" class="card">
-                <div class="icon">😡</div>
-                <h3>Angry IP Scanner</h3>
-                <p>Açık kaynaklı, hızlı ve multiplatform IP/Port tarayıcı.</p>
-            </a>
-            <a href="https://www.nirsoft.net/utils/multiple_ping_tool.html" target="_blank" class="card">
-                <div class="icon">📊</div>
-                <h3>PingInfoView</h3>
-                <p>Aynı anda yüzlerce IP adresini anlık olarak pingleyen IT aracı.</p>
-            </a>
+        <div id="network" class="category-panel">
+            <h2 class="category-title">> Network & Traffic Analysis</h2>
+            <div class="grid">
+                <a href="https://www.wireshark.org/download.html" target="_blank" class="card">
+                    <div class="icon">🦈</div>
+                    <h3>Wireshark</h3>
+                    <p>Derinlemesine paket analizi ve ağ trafiği izleme aracı.</p>
+                </a>
+                <a href="https://nmap.org/download.html" target="_blank" class="card">
+                    <div class="icon">🔍</div>
+                    <h3>Nmap / Zenmap</h3>
+                    <p>Ağ keşfi, port tarama ve zafiyet analiz mekanizması.</p>
+                </a>
+                <a href="https://www.advanced-ip-scanner.com/tr/" target="_blank" class="card">
+                    <div class="icon">🌐</div>
+                    <h3>Advanced IP Scanner</h3>
+                    <p>Hızlı ve güvenilir yerel ağ (LAN) tarayıcı yazılımı.</p>
+                </a>
+                <a href="https://angryip.org/download/#windows" target="_blank" class="card">
+                    <div class="icon">😡</div>
+                    <h3>Angry IP Scanner</h3>
+                    <p>Açık kaynaklı, hızlı ve multiplatform IP/Port tarayıcı.</p>
+                </a>
+                <a href="https://www.nirsoft.net/utils/multiple_ping_tool.html" target="_blank" class="card">
+                    <div class="icon">📊</div>
+                    <h3>PingInfoView</h3>
+                    <p>Aynı anda yüzlerce IP adresini anlık olarak pingleyen IT aracı.</p>
+                </a>
+                <a href="https://github.com/" target="_blank" class="card">
+                    <div class="icon">📡</div>
+                    <h3>Router_Configs</h3>
+                    <p>Endüstriyel 4G/Industrial Router kılavuzları ve APN/DNS arşivi.</p>
+                </a>
+            </div>
         </div>
 
-        <h2 class="category-title">> Forensic_&_Log_Analysis</h2>
-        <div class="grid">
-            <a href="https://gchq.github.io/CyberChef/" target="_blank" class="card">
-                <div class="icon">👨‍🍳</div>
-                <h3>CyberChef</h3>
-                <p>GCHQ onaylı; veri kriptolama, encode/decode ve log ayrıştırma merkezi.</p>
-            </a>
+        <div id="remote" class="category-panel">
+            <h2 class="category-title">> Remote & Terminal Management</h2>
+            <div class="grid">
+                <a href="https://www.putty.org/" target="_blank" class="card">
+                    <div class="icon">📟</div>
+                    <h3>PuTTY</h3>
+                    <p>SSH, Telnet ve seri port bağlantı terminali.</p>
+                </a>
+                <a href="https://mobaxterm.mobatek.net/download.html" target="_blank" class="card">
+                    <div class="icon">🚀</div>
+                    <h3>MobaXterm</h3>
+                    <p>Gelişmiş uzak sunucu yönetim ve X11 seans kontrol paneli.</p>
+                </a>
+                <a href="https://anydesk.com/tr/downloads/windows" target="_blank" class="card">
+                    <div class="icon">🛑</div>
+                    <h3>AnyDesk</h3>
+                    <p>Hızlı ve taşınabilir uzak masaüstü bağlantı istemcisi.</p>
+                </a>
+                <a href="https://www.teamviewer.com/tr/download/windows/" target="_blank" class="card">
+                    <div class="icon">🔗</div>
+                    <h3>TeamViewer</h3>
+                    <p>Gelişmiş IT destek ve anlık uzak masaüstü kontrol yazılımı.</p>
+                </a>
+                <a href="https://www.teamviewer.com/tr/download/windows/#host" target="_blank" class="card">
+                    <div class="icon">🖥️</div>
+                    <h3>TeamViewer Host</h3>
+                    <p>Sunucular ve uzak test cihazları için 7/24 kalıcı erişim modülü.</p>
+                </a>
+            </div>
         </div>
 
-        <h2 class="category-title">> Remote_&_Terminal_Management</h2>
-        <div class="grid">
-            <a href="https://www.putty.org/" target="_blank" class="card">
-                <div class="icon">📟</div>
-                <h3>PuTTY</h3>
-                <p>SSH, Telnet ve seri port bağlantı terminali.</p>
-            </a>
-            <a href="https://mobaxterm.mobatek.net/download.html" target="_blank" class="card">
-                <div class="icon">🚀</div>
-                <h3>MobaXterm</h3>
-                <p>Gelişmiş uzak sunucu yönetim ve X11 seans kontrol paneli.</p>
-            </a>
-            <a href="https://anydesk.com/tr/downloads/windows" target="_blank" class="card">
-                <div class="icon">🛑</div>
-                <h3>AnyDesk</h3>
-                <p>Hızlı ve taşınabilir uzak masaüstü bağlantı istemcisi.</p>
-            </a>
-            <a href="https://www.teamviewer.com/tr/download/windows/" target="_blank" class="card">
-                <div class="icon">🔗</div>
-                <h3>TeamViewer</h3>
-                <p>Gelişmiş IT destek ve anlık uzak masaüstü kontrol yazılımı.</p>
-            </a>
-            <a href="https://www.teamviewer.com/tr/download/windows/#host" target="_blank" class="card">
-                <div class="icon">🖥️</div>
-                <h3>TeamViewer Host</h3>
-                <p>Sunucular ve uzak test cihazları için 7/24 kalıcı erişim modülü.</p>
-            </a>
+        <div id="credential" class="category-panel">
+            <h2 class="category-title">> Credentials, Forensics & Sys</h2>
+            <div class="grid">
+                <a href="https://bitwarden.com/download/" target="_blank" class="card">
+                    <div class="icon">🔑</div>
+                    <h3>Bitwarden</h3>
+                    <p>Açık kaynaklı, şifreli kurumsal parola ve kimlik kasası.</p>
+                </a>
+                <a href="https://gchq.github.io/CyberChef/" target="_blank" class="card">
+                    <div class="icon">👨‍🍳</div>
+                    <h3>CyberChef</h3>
+                    <p>GCHQ onaylı; veri kriptolama, encode/decode ve log ayrıştırma merkezi.</p>
+                </a>
+                <a href="https://rufus.ie/tr/" target="_blank" class="card">
+                    <div class="icon">💾</div>
+                    <h3>Rufus</h3>
+                    <p>Önyüklenebilir (bootable) USB medya oluşturma yazılımı.</p>
+                </a>
+                <a href="https://www.revouninstaller.com/revo-uninstaller-free-download/" target="_blank" class="card">
+                    <div class="icon">🧼</div>
+                    <h3>Revo Uninstaller</h3>
+                    <p>Kayıt defteri (registry) kalıntılarını temizleyen gelişmiş kaldırıcı.</p>
+                </a>
+            </div>
         </div>
 
-        <h2 class="category-title">> Credential_&_Sys_Management</h2>
-        <div class="grid">
-            <a href="https://bitwarden.com/download/" target="_blank" class="card">
-                <div class="icon">🔑</div>
-                <h3>Bitwarden</h3>
-                <p>Açık kaynaklı, şifreli kurumsal parola ve kimlik kasası.</p>
-            </a>
-            <a href="https://rufus.ie/tr/" target="_blank" class="card">
-                <div class="icon">💾</div>
-                <h3>Rufus</h3>
-                <p>Önyüklenebilir (bootable) USB medya oluşturma yazılımı.</p>
-            </a>
-            <a href="https://www.revouninstaller.com/revo-uninstaller-free-download/" target="_blank" class="card">
-                <div class="icon">🧼</div>
-                <h3>Revo Uninstaller</h3>
-                <p>Kayıt defteri (registry) kalıntılarını temizleyen gelişmiş kaldırıcı.</p>
-            </a>
+        <div id="enterprise" class="category-panel">
+            <h2 class="category-title">> Enterprise Server Labs</h2>
+            <div class="grid">
+                <a href="https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022" target="_blank" class="card">
+                    <div class="icon">🏢</div>
+                    <h3>Windows Server ISO</h3>
+                    <p>Active Directory ve etki alanı (Domain) mimarisi kurumsal test imajı.</p>
+                </a>
+                <a href="https://www.pfsense.org/download/" target="_blank" class="card">
+                    <div class="icon">🧱</div>
+                    <h3>pfSense Firewall</h3>
+                    <p>Sanal ağ güvenliği, yönlendirme ve açık kaynak güvenlik duvarı ISO imajı.</p>
+                </a>
+            </div>
         </div>
 
-        <h2 class="category-title">> Enterprise_Server_Labs</h2>
-        <div class="grid">
-            <a href="https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022" target="_blank" class="card">
-                <div class="icon">🏢</div>
-                <h3>Windows Server ISO</h3>
-                <p>Active Directory ve etki alanı (Domain) mimarisi kurumsal test imajı.</p>
-            </a>
-            <a href="https://www.pfsense.org/download/" target="_blank" class="card">
-                <div class="icon">🧱</div>
-                <h3>pfSense Firewall</h3>
-                <p>Sanal ağ güvenliği, yönlendirme ve açık kaynak güvenlik duvarı ISO imajı.</p>
-            </a>
+        <div id="os" class="category-panel">
+            <h2 class="category-title">> Operating Systems & Hypervisors</h2>
+            <div class="grid">
+                <a href="https://docs.google.com/uc?export=download&id=1bbRk2Lt4OFr1NksBb-5wA1gaBDs7rpVd" class="card">
+                    <div class="icon">🖥️</div>
+                    <h3>VMware Workstation</h3>
+                    <p>Kişisel Drive sunucusundan direkt setup paketini indir.</p>
+                </a>
+                <a href="https://www.kali.org/get-kali/" target="_blank" class="card">
+                    <div class="icon">🐉</div>
+                    <h3>Kali Linux</h3>
+                    <p>Gelişmiş sızma testi ve siber güvenlik OS imajı.</p>
+                </a>
+                <a href="https://www.microsoft.com/tr-tr/software-download/windows10ISO" target="_blank" class="card">
+                    <div class="icon">🪟</div>
+                    <h3>Windows 10 ISO</h3>
+                    <p>İstemci güvenlik test ve lab ortamı işletim sistemi.</p>
+                </a>
+                <a href="https://www.microsoft.com/tr-tr/software-download/windows11" target="_blank" class="card">
+                    <div class="icon">🪟</div>
+                    <h3>Windows 11 ISO</h3>
+                    <p>Modern endpoint analizi ve güncel OS test imajı.</p>
+                </a>
+            </div>
         </div>
 
-        <h2 class="category-title">> Operating_Systems_&_Hypervisors</h2>
-        <div class="grid">
-            <a href="https://docs.google.com/uc?export=download&id=1bbRk2Lt4OFr1NksBb-5wA1gaBDs7rpVd" class="card">
-                <div class="icon">🖥️</div>
-                <h3>VMware Workstation</h3>
-                <p>Kişisel Drive sunucusundan direkt setup paketini indir.</p>
-            </a>
-            <a href="https://www.kali.org/get-kali/" target="_blank" class="card">
-                <div class="icon">🐉</div>
-                <h3>Kali Linux</h3>
-                <p>Gelişmiş sızma testi ve siber güvenlik OS imajı.</p>
-            </a>
-            <a href="https://www.microsoft.com/tr-tr/software-download/windows10ISO" target="_blank" class="card">
-                <div class="icon">🪟</div>
-                <h3>Windows 10 ISO</h3>
-                <p>İstemci güvenlik test ve lab ortamı işletim sistemi.</p>
-            </a>
-            <a href="https://www.microsoft.com/tr-tr/software-download/windows11" target="_blank" class="card">
-                <div class="icon">🪟</div>
-                <h3>Windows 11 ISO</h3>
-                <p>Modern endpoint analizi ve güncel OS test imajı.</p>
-            </a>
+        <div id="hardware" class="category-panel">
+            <h2 class="category-title">> Hardware Teşhis & Troubleshooting</h2>
+            <div class="grid">
+                <a href="https://crystalmark.info/en/software/crystaldiskinfo/" target="_blank" class="card">
+                    <div class="icon">🩺</div>
+                    <h3>CrystalDiskInfo</h3>
+                    <p>SSD/HDD disk sağlık durumları, ömür ve sıcaklık teşhis takibi.</p>
+                </a>
+                <a href="https://www.cpuid.com/softwares/hwmonitor.html" target="_blank" class="card">
+                    <div class="icon">🌡️</div>
+                    <h3>HWMonitor</h3>
+                    <p>İşlemci, ekran kartı ve donanım voltaj/sıcaklık anlık izleme aracı.</p>
+                </a>
+            </div>
         </div>
 
-        <h2 class="category-title">> Hardware_&_Sys_Troubleshoot</h2>
-        <div class="grid">
-            <a href="https://crystalmark.info/en/software/crystaldiskinfo/" target="_blank" class="card">
-                <div class="icon">🩺</div>
-                <h3>CrystalDiskInfo</h3>
-                <p>SSD/HDD disk sağlık durumları, ömür ve sıcaklık teşhis takibi.</p>
-            </a>
-            <a href="https://www.cpuid.com/softwares/hwmonitor.html" target="_blank" class="card">
-                <div class="icon">🌡️</div>
-                <h3>HWMonitor</h3>
-                <p>İşlemci, ekran kartı ve donanım voltaj/sıcaklık anlık izleme aracı.</p>
-            </a>
+        <div id="database" class="category-panel">
+            <h2 class="category-title">> Database Engines & Deployment</h2>
+            <div class="grid">
+                <a href="https://www.microsoft.com/en-us/sql-server/sql-server-downloads" target="_blank" class="card">
+                    <div class="icon">💾</div>
+                    <h3>MS SQL Server</h3>
+                    <p>Kurumsal SQL yapısı ve veri tabanı motoru.</p>
+                </a>
+                <a href="https://dev.mysql.com/downloads/installer/" target="_blank" class="card">
+                    <div class="icon">🐬</div>
+                    <h3>MySQL Installer</h3>
+                    <p>Açık kaynak ilişkisel veri tabanı kurulum paketi.</p>
+                </a>
+                <a href="https://www.win-rar.com/postdownload.html" target="_blank" class="card">
+                    <div class="icon">📦</div>
+                    <h3>WinRAR</h3>
+                    <p>Arşiv ve paket sıkıştırma yöneticisi.</p>
+                </a>
+                <a href="https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user" target="_blank" class="card">
+                    <div class="icon">⚡</div>
+                    <h3>VS Code</h3>
+                    <p>Geliştirme, betik (script) ve log düzenleme ortamı.</p>
+                </a>
+                <a href="https://www.libreoffice.org/download/download-libreoffice/" target="_blank" class="card">
+                    <div class="icon">📊</div>
+                    <h3>LibreOffice</h3>
+                    <p>Açık kaynak dokümantasyon ve raporlama paketi.</p>
+                </a>
+                <a href="https://drive.google.com/drive/folders/15J6Zr1fbSzyL5UvM99VxRNCnLtNYeow2?usp=drive_link" target="_blank" class="card">
+                    <div class="icon">🛡️</div>
+                    <h3>Cloud_Backup</h3>
+                    <p>Google Drive güvenli uzak yedekleme dizini.</p>
+                </a>
+            </div>
         </div>
 
-        <h2 class="category-title">> Database_Engines</h2>
-        <div class="grid">
-            <a href="https://www.microsoft.com/en-us/sql-server/sql-server-downloads" target="_blank" class="card">
-                <div class="icon">💾</div>
-                <h3>MS SQL Server</h3>
-                <p>Kurumsal SQL yapısı ve veri tabanı motoru.</p>
-            </a>
-            <a href="https://dev.mysql.com/downloads/installer/" target="_blank" class="card">
-                <div class="icon">🐬</div>
-                <h3>MySQL Installer</h3>
-                <p>Açık kaynak ilişkisel veri tabanı kurulum paketi.</p>
-            </a>
-        </div>
-
-        <h2 class="category-title">> Industrial_&_Network_Firmwares</h2>
-        <div class="grid">
-            <a href="https://github.com/" target="_blank" class="card">
-                <div class="icon">📡</div>
-                <h3>Router_Configs</h3>
-                <p>Endüstriyel 4G/Industrial Router kılavuzları ve APN/DNS arşivi.</p>
-            </a>
-        </div>
-
-        <h2 class="category-title">> Deployment_Toolkits_&_Storages</h2>
-        <div class="grid">
-            <a href="https://www.win-rar.com/postdownload.html" target="_blank" class="card">
-                <div class="icon">📦</div>
-                <h3>WinRAR</h3>
-                <p>Arşiv ve paket sıkıştırma yöneticisi.</p>
-            </a>
-            <a href="https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user" target="_blank" class="card">
-                <div class="icon">⚡</div>
-                <h3>VS Code</h3>
-                <p>Geliştirme, betik (script) ve log düzenleme ortamı.</p>
-            </a>
-            <a href="https://www.libreoffice.org/download/download-libreoffice/" target="_blank" class="card">
-                <div class="icon">📊</div>
-                <h3>LibreOffice</h3>
-                <p>Açık kaynak dokümantasyon ve raporlama paketi.</p>
-            </a>
-            <a href="https://drive.google.com/drive/folders/15J6Zr1fbSzyL5UvM99VxRNCnLtNYeow2?usp=drive_link" target="_blank" class="card">
-                <div class="icon">🛡️</div>
-                <h3>Cloud_Backup</h3>
-                <p>Google Drive güvenli uzak yedekleme dizini.</p>
-            </a>
-        </div>
     </div>
 </div>
 
@@ -405,6 +448,24 @@
         .catch(error => {
             document.getElementById('ip-address').innerText = "0.0.0.0 (Offline)";
         });
+</script>
+
+<script>
+    function switchCategory(categoryId) {
+        // Tüm panelleri gizle
+        const panels = document.querySelectorAll('.category-panel');
+        panels.forEach(panel => panel.classList.remove('active'));
+
+        // Tüm butonların aktiflik sınıflarını temizle
+        const buttons = document.querySelectorAll('.menu-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+
+        // Tıklanan sekmeyi ve butonu aktif et
+        document.getElementById(categoryId).classList.add('active');
+        
+        // Tetikleyen butona aktif sınıfını ekle
+        event.currentTarget.classList.add('active');
+    }
 </script>
 
 <script>
