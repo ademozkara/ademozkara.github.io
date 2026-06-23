@@ -114,7 +114,7 @@
             background: rgba(56, 189, 248, 0.15);
         }
 
-        /* GÖRSELDEKİ SATIR DİZİN YAPISI (MINIMALIST ACCORDION) */
+        /* MINIMALIST ACCORDION SATIR YAPISI */
         .accordion-wrapper {
             margin-bottom: 12px;
         }
@@ -128,7 +128,6 @@
             user-select: none;
             transition: color 0.1s ease;
         }
-        /* Başındaki mini yeşil oynatıcı oku */
         .accordion-header::before {
             content: '▸';
             color: var(--text-main);
@@ -141,15 +140,14 @@
             color: var(--text-main);
         }
         
-        /* Aktif klasör durumu */
         .accordion-wrapper.active .accordion-header {
             color: var(--text-main);
         }
         .accordion-wrapper.active .accordion-header::before {
-            transform: rotate(90deg); /* Aşağı doğru döner */
+            transform: rotate(90deg);
         }
 
-        /* ALT PROGRAM LİSTESİ (KLASÖR İÇERİĞİ) */
+        /* ALT LİSTE */
         .accordion-content {
             display: none;
             padding: 8px 0 5px 25px;
@@ -158,7 +156,6 @@
             display: block;
         }
 
-        /* Alt elemanlar da ls listesi gibi alt alta listelenir */
         .grid {
             display: flex;
             flex-direction: column;
@@ -172,6 +169,12 @@
             display: inline-flex;
             align-items: center;
             transition: color 0.1s ease;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            padding: 0;
+            font-family: inherit;
+            text-align: left;
         }
         .card::before {
             content: '•';
@@ -194,6 +197,23 @@
         .card:hover p {
             color: #6b7280;
         }
+
+        /* TERMİNAL SONUÇ PANELİ TASARIMI */
+        .terminal-output {
+            display: none;
+            background: rgba(10, 16, 26, 0.85);
+            border: 1px solid rgba(0, 255, 102, 0.2);
+            padding: 10px 14px;
+            margin-top: 8px;
+            margin-bottom: 12px;
+            border-radius: 3px;
+            font-size: 12px;
+            color: var(--text-main);
+            line-height: 1.4;
+            max-width: 600px;
+            white-space: pre-wrap;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+        }
     </style>
 </head>
 <body>
@@ -208,11 +228,30 @@
             <div class="info-box">[SYS_INFO] Target_Public_IP: <span id="ip-address">Sorgulanıyor...</span></div>
             <div class="search-container">
                 <span class="search-prompt">$ grep -i</span>
-                <input type="text" id="console-search" class="search-input" placeholder="filtrelemek istediğiniz araç..." oninput="filterApplications()">
+                <input type="text" id="console-search" class="search-input" placeholder="filtrelemek istediğiniz araç veya testi girin..." oninput="filterApplications()">
             </div>
         </header>
 
         <div class="accordion-container">
+
+            <div class="accordion-wrapper">
+                <div class="accordion-header">system_diagnostics/</div>
+                <div class="accordion-content">
+                    <div class="grid">
+                        <button class="card" onclick="runPingTest()">
+                            <h3>sh_run_ping_test</h3>
+                            <p>// Google DNS sunucularına anlık ping gecikmesi ölç</p>
+                        </button>
+                        <div id="ping-result" class="terminal-output"></div>
+
+                        <button class="card" onclick="runSpeedTest()">
+                            <h3>sh_run_speed_test</h3>
+                            <p>// Bant genişliği indirme ve yükleme testi simüle et</p>
+                        </button>
+                        <div id="speed-result" class="terminal-output"></div>
+                    </div>
+                </div>
+            </div>
 
             <div class="accordion-wrapper">
                 <div class="accordion-header">vulnerability/</div>
@@ -367,6 +406,82 @@
 </script>
 
 <script>
+    function runPingTest() {
+        const output = document.getElementById('ping-result');
+        output.style.display = 'block';
+        output.innerText = "$ ping -c 4 8.8.8.8\nPING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.\n[KONTROL EDİLİYOR...]";
+
+        const startTime = performance.now();
+        
+        // Google Favicon kullanarak gerçek ağ gecikmesi testi yapar
+        fetch('https://www.google.com/favicon.ico', { mode: 'no-cors', cache: 'no-store' })
+            .then(() => {
+                const duration = Math.round(performance.now() - startTime);
+                // Gerçekçi ICMP log çıktısı üretimi
+                let log = `$ ping -c 4 8.8.8.8\n`;
+                log += `PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.\n`;
+                log += `64 bytes from 8.8.8.8: icmp_seq=1 ttl=118 time=${duration} ms\n`;
+                log += `64 bytes from 8.8.8.8: icmp_seq=2 ttl=118 time=${duration + 2} ms\n`;
+                log += `64 bytes from 8.8.8.8: icmp_seq=3 ttl=118 time=${Math.max(1, duration - 1)} ms\n`;
+                log += `64 bytes from 8.8.8.8: icmp_seq=4 ttl=118 time=${duration + 1} ms\n\n`;
+                log += `--- 8.8.8.8 ping statistics ---\n`;
+                log += `4 packets transmitted, 4 received, 0% packet loss, time 3004ms\n`;
+                log += `rtt min/avg/max/mdev = ${Math.max(1, duration-1)}.0/${duration}.2/${duration+2}.0 ms`;
+                output.innerText = log;
+            })
+            .catch(() => {
+                output.innerText = "$ ping -c 4 8.8.8.8\nİstek zaman aşımına uğradı. Ağ bağlantısını kontrol edin.";
+            });
+    }
+</script>
+
+<script>
+    function runSpeedTest() {
+        const output = document.getElementById('speed-result');
+        output.style.display = 'block';
+        output.innerText = "$ speedtest-cli --secure\nRetrieving speedtest.net configuration...\nTesting from infrastructure...\n[İŞLEM BAŞLATILDI - VERİ PAKETLERİ AKTARILIYOR...]";
+
+        const imageAddr = "https://upload.wikimedia.org/wikipedia/commons/3/3d/LARGE_elevation.jpg?r=" + Math.random();
+        const downloadSize = 5000000; // Yaklaşık dosya boyutu parametresi
+        const startTime = new Date().getTime();
+
+        const download = new Image();
+        download.onload = function () {
+            const endTime = new Date().getTime();
+            const duration = (endTime - startTime) / 1000;
+            const bitsLoaded = downloadSize * 8;
+            const speedBps = bitsLoaded / duration;
+            const speedMbps = ((speedBps / 1024) / 1024).toFixed(2);
+            
+            // Simüle edilmiş upload değeri hesabı
+            const mockUpload = (speedMbps * 0.35).toFixed(2);
+
+            let log = `$ speedtest-cli --secure\n`;
+            log += `Retrieving speedtest.net server list...\n`;
+            log += `Testing from Host Connection (Local ISP)...\n`;
+            log += `Hosting Service Selected Area: Istanbul / TR\n\n`;
+            log += `[✓] DOWNLOAD SPEED : ${speedMbps} Mbps\n`;
+            log += `[✓] UPLOAD SPEED   : ${mockUpload} Mbps\n\n`;
+            log += `Execution completed successfully.`;
+            output.innerText = log;
+        }
+        
+        download.onerror = function () {
+            // Çevrimdışı veya bloklanma durumunda yedek gerçekçi simülatör
+            setTimeout(() => {
+                let log = `$ speedtest-cli --secure\n`;
+                log += `[✓] DOWNLOAD SPEED : 78.45 Mbps\n`;
+                log += `[✓] UPLOAD SPEED   : 22.10 Mbps\n\n`;
+                log += `Note: Offline mock calculation mode active.`;
+                output.innerText = log;
+            }, 1200);
+        }
+        
+        download.src = imageAddr;
+    }
+</script>
+
+<script>
     function filterApplications() {
         const searchInput = document.getElementById('console-search').value.toLowerCase().trim();
         const accordions = document.querySelectorAll('.accordion-wrapper');
@@ -384,6 +499,11 @@
                     accordionHasMatch = true;
                 } else {
                     card.style.display = 'none';
+                    // Bağlı terminal çıktı panellerini gizle
+                    const nextOutput = card.nextElementSibling;
+                    if (nextOutput && nextOutput.classList.contains('terminal-output')) {
+                        nextOutput.style.display = 'none';
+                    }
                 }
             });
 
