@@ -6,52 +6,72 @@
     <title>C2-Console // Adem Özkara IT & Cyber Security Hub</title>
     <style>
         :root {
-            --bg-color: #04070d;
-            --panel-bg: rgba(9, 14, 24, 0.78);
+            --bg-color: #030712;
+            --panel-bg: rgba(9, 14, 26, 0.88);
+            --panel-sub: rgba(13, 22, 38, 0.7);
             --text-main: #00ff66; /* Matrix Green */
-            --text-secondary: #00e5ff; /* Cyan Accent */
+            --text-secondary: #38bdf8; /* Cyber Cyan */
             --text-muted: #64748b;
-            --accent-glow: #38bdf8;
-            --border-dim: rgba(56, 189, 248, 0.15);
-            --border-highlight: rgba(0, 255, 102, 0.35);
+            --text-light: #cbd5e1;
+            --border-dim: rgba(56, 189, 248, 0.16);
+            --border-active: rgba(0, 255, 102, 0.45);
             --alert-red: #f43f5e;
-            --code-bg: rgba(6, 11, 20, 0.95);
+            --code-bg: #020409;
         }
 
         * {
             box-sizing: border-box;
         }
 
-        body, html {
+        /* Akıcı ve doğal sayfa kaydırması için overflow kuralı */
+        html, body {
             margin: 0;
             padding: 0;
             width: 100%;
-            height: 100%;
+            min-height: 100%;
             background-color: var(--bg-color);
-            font-family: 'Courier New', Courier, Consolas, Monaco, monospace;
-            overflow: hidden;
-            color: #e2e8f0;
+            font-family: 'Consolas', 'Courier New', Monaco, monospace;
+            color: var(--text-light);
             font-size: 13px;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
-        /* Matrix Digital Rain Canvas */
+        /* Özel Koyu Siber Kaydırma Çubuğu (Scrollbar) */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #02050b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(56, 189, 248, 0.25);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-main);
+        }
+
+        /* Loş Matrix Yağmuru Canvas */
         #matrix-canvas {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             z-index: 1;
             pointer-events: none;
         }
 
+        /* Güvenlik Doğrulama Katmanı (Auth Overlay) */
         #login-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(3, 6, 12, 0.94);
+            background: rgba(3, 7, 18, 0.96);
             backdrop-filter: blur(12px);
             display: flex;
             justify-content: center;
@@ -61,16 +81,15 @@
         }
 
         .login-box {
-            background: #090e18;
-            padding: 35px 40px;
+            background: #080d19;
+            padding: 32px 36px;
             border-radius: 4px;
             border: 1px solid var(--text-main);
-            box-shadow: 0 0 35px rgba(0, 255, 102, 0.2), inset 0 0 15px rgba(0, 255, 102, 0.05);
+            box-shadow: 0 0 35px rgba(0, 255, 102, 0.18), inset 0 0 15px rgba(0, 255, 102, 0.04);
             width: 90%;
-            max-width: 390px;
+            max-width: 380px;
             text-align: left;
             position: relative;
-            transition: transform 0.2s;
         }
 
         .shake-anim {
@@ -87,10 +106,10 @@
 
         .login-header {
             color: var(--text-main);
-            font-size: 14px;
-            margin-bottom: 18px;
-            border-bottom: 1px solid rgba(0, 255, 102, 0.25);
-            padding-bottom: 10px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed rgba(0, 255, 102, 0.3);
+            padding-bottom: 8px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -99,12 +118,12 @@
         .login-prompt {
             color: var(--text-secondary);
             font-size: 11px;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             line-height: 1.4;
         }
 
         .auth-field-group {
-            margin-bottom: 16px;
+            margin-bottom: 15px;
         }
 
         .auth-field-label {
@@ -116,21 +135,21 @@
         }
 
         .auth-field-label span {
-            color: var(--accent-glow);
+            color: var(--text-secondary);
             font-weight: bold;
         }
 
         .auth-input {
             width: 100%;
-            padding: 10px 12px;
-            background: #02050b;
+            padding: 9px 12px;
+            background: #02050d;
             border: 1px solid var(--border-dim);
             color: var(--text-main);
             font-family: inherit;
             font-size: 13px;
             border-radius: 2px;
             outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: all 0.2s;
         }
 
         .auth-input:focus {
@@ -140,9 +159,9 @@
 
         .auth-btn {
             width: 100%;
-            padding: 12px;
+            padding: 11px;
             margin-top: 10px;
-            background: rgba(0, 255, 102, 0.1);
+            background: rgba(0, 255, 102, 0.08);
             border: 1px solid var(--text-main);
             color: var(--text-main);
             font-family: inherit;
@@ -156,39 +175,38 @@
         }
 
         .auth-btn:hover {
-            background: rgba(0, 255, 102, 0.25);
-            box-shadow: 0 0 18px rgba(0, 255, 102, 0.4);
+            background: rgba(0, 255, 102, 0.2);
+            box-shadow: 0 0 16px rgba(0, 255, 102, 0.35);
         }
 
         #auth-error {
             color: var(--alert-red);
             font-size: 11px;
-            margin-top: 12px;
+            margin-top: 10px;
             display: none;
             text-align: center;
             font-weight: bold;
-            line-height: 1.4;
         }
 
         .main-layout {
             position: relative;
             z-index: 10;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 14px 24px;
-            max-width: 1350px;
+            padding: 20px 24px 40px 24px;
+            max-width: 1440px;
             margin: 0 auto;
         }
 
+        /* Üst Telemetri HUD Başlığı */
         .hud-header {
-            flex-shrink: 0;
             background: var(--panel-bg);
             border: 1px solid var(--border-dim);
             border-radius: 4px;
-            padding: 10px 16px;
-            margin-bottom: 12px;
-            backdrop-filter: blur(8px);
+            padding: 12px 18px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(10px);
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
@@ -199,20 +217,20 @@
         .hud-title-zone {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .hud-title {
             color: var(--text-main);
-            font-size: 14px;
+            font-size: 15px;
             font-weight: bold;
             letter-spacing: 0.5px;
             margin: 0;
         }
 
         .badge {
-            background: rgba(0, 255, 102, 0.08);
-            border: 1px solid rgba(0, 255, 102, 0.25);
+            background: rgba(0, 255, 102, 0.1);
+            border: 1px solid rgba(0, 255, 102, 0.3);
             padding: 2px 7px;
             border-radius: 3px;
             font-size: 10px;
@@ -220,15 +238,15 @@
         }
 
         .badge-cyan {
-            background: rgba(0, 229, 255, 0.08);
-            border-color: rgba(0, 229, 255, 0.3);
+            background: rgba(56, 189, 248, 0.1);
+            border-color: rgba(56, 189, 248, 0.35);
             color: var(--text-secondary);
         }
 
         .hud-stats-zone {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 18px;
             font-size: 11px;
             color: var(--text-muted);
         }
@@ -240,7 +258,7 @@
 
         .hud-lock-btn {
             background: transparent;
-            border: 1px solid rgba(244, 63, 94, 0.3);
+            border: 1px solid rgba(244, 63, 94, 0.35);
             color: var(--alert-red);
             font-family: inherit;
             font-size: 11px;
@@ -252,27 +270,26 @@
 
         .hud-lock-btn:hover {
             background: rgba(244, 63, 94, 0.15);
-            box-shadow: 0 0 10px rgba(244, 63, 94, 0.3);
+            box-shadow: 0 0 10px rgba(244, 63, 94, 0.35);
         }
 
-        /* Interactive Command Bar */
+        /* Canlı Komut & Arama Filtre Çubuğu */
         .cmd-bar {
-            flex-shrink: 0;
-            background: rgba(5, 10, 18, 0.85);
+            background: rgba(6, 11, 22, 0.9);
             border: 1px solid var(--border-dim);
             border-radius: 4px;
-            padding: 8px 14px;
-            margin-bottom: 12px;
+            padding: 9px 16px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             backdrop-filter: blur(8px);
         }
 
         .cmd-prefix {
             color: var(--text-main);
             font-weight: bold;
-            font-size: 12px;
+            font-size: 13px;
             white-space: nowrap;
         }
 
@@ -282,60 +299,80 @@
             border: none;
             color: var(--text-main);
             font-family: inherit;
-            font-size: 12px;
+            font-size: 13px;
             outline: none;
         }
 
         .cmd-input::placeholder {
-            color: rgba(100, 116, 139, 0.6);
+            color: rgba(100, 116, 139, 0.55);
         }
 
         .cmd-helper-hint {
-            font-size: 10px;
+            font-size: 11px;
             color: var(--text-muted);
             white-space: nowrap;
         }
 
-        .directory-container {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding-right: 6px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        /* 3 Sütunlu Modüler Operasyon Izgarası (C2 Columns) */
+        .operations-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
         }
 
-        .directory-container::-webkit-scrollbar {
-            width: 4px;
+        @media (max-width: 1100px) {
+            .operations-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
         }
-        .directory-container::-webkit-scrollbar-track {
-            background: rgba(2, 5, 10, 0.3);
+
+        @media (max-width: 768px) {
+            .operations-grid {
+                grid-template-columns: 1fr;
+            }
         }
-        .directory-container::-webkit-scrollbar-thumb {
-            background: rgba(56, 189, 248, 0.25);
-            border-radius: 2px;
+
+        .column-module {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
-        .directory-container::-webkit-scrollbar-thumb:hover {
-            background: var(--text-main);
+
+        .column-header {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            border-bottom: 1px dashed var(--border-dim);
+            padding-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .column-header span {
+            color: var(--text-muted);
+            font-size: 10px;
         }
 
         .folder-item {
             background: var(--panel-bg);
             border: 1px solid var(--border-dim);
-            border-radius: 3px;
+            border-radius: 4px;
             overflow: hidden;
             transition: border-color 0.15s, background-color 0.15s;
         }
 
         .folder-item:hover {
-            border-color: rgba(56, 189, 248, 0.35);
+            border-color: rgba(56, 189, 248, 0.4);
         }
 
         .folder-header {
-            padding: 8px 14px;
-            background: rgba(11, 18, 30, 0.5);
+            padding: 9px 14px;
+            background: rgba(12, 19, 34, 0.6);
             color: var(--text-secondary);
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
@@ -347,7 +384,7 @@
         .folder-title-left {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .folder-arrow {
@@ -363,7 +400,7 @@
 
         .folder-item.active .folder-header {
             color: var(--text-main);
-            border-bottom: 1px dashed rgba(56, 189, 248, 0.15);
+            border-bottom: 1px dashed rgba(56, 189, 248, 0.18);
             background: rgba(0, 255, 102, 0.04);
         }
 
@@ -374,8 +411,8 @@
 
         .folder-body {
             display: none;
-            padding: 10px 16px 14px 28px;
-            background: rgba(5, 9, 16, 0.45);
+            padding: 10px 14px 12px 18px;
+            background: rgba(4, 8, 16, 0.55);
         }
 
         .folder-item.active .folder-body {
@@ -385,7 +422,7 @@
         .file-list {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 4px;
         }
 
         .file-entry {
@@ -394,9 +431,9 @@
             text-decoration: none;
             color: #94a3b8;
             font-size: 12px;
-            padding: 4px 6px;
+            padding: 5px 8px;
             border-radius: 2px;
-            transition: all 0.12s;
+            transition: all 0.15s;
             cursor: pointer;
             border: 1px solid transparent;
             background: transparent;
@@ -408,12 +445,12 @@
         .file-entry:hover {
             color: #ffffff;
             background: rgba(56, 189, 248, 0.08);
-            border-color: rgba(56, 189, 248, 0.2);
-            padding-left: 10px;
+            border-color: rgba(56, 189, 248, 0.25);
+            padding-left: 11px;
         }
 
         .file-bullet {
-            color: rgba(0, 255, 102, 0.6);
+            color: rgba(0, 255, 102, 0.7);
             margin-right: 8px;
             font-size: 10px;
         }
@@ -425,45 +462,51 @@
 
         .file-entry:hover .file-name {
             color: var(--text-main);
-            text-shadow: 0 0 5px rgba(0, 255, 102, 0.4);
+            text-shadow: 0 0 6px rgba(0, 255, 102, 0.4);
         }
 
         .file-desc {
             color: var(--text-muted);
-            margin-left: 12px;
+            margin-left: 10px;
             font-size: 11px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .file-action-tag {
             margin-left: auto;
             font-size: 10px;
             color: var(--text-secondary);
-            opacity: 0.6;
+            opacity: 0.65;
+            padding-left: 6px;
         }
 
         .file-entry:hover .file-action-tag {
             opacity: 1;
         }
 
+        /* Terminal Konsol Ekranı (Diagnostik Sonuçlar) */
         .terminal-screen {
             display: none;
             background: var(--code-bg);
-            border: 1px solid var(--border-highlight);
+            border: 1px solid var(--border-active);
             border-radius: 3px;
             padding: 10px 14px;
-            margin: 8px 0 10px 0;
+            margin: 6px 0 10px 0;
             color: var(--text-main);
             font-size: 11px;
             line-height: 1.5;
             white-space: pre-wrap;
-            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.85);
+            box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.9);
             max-height: 220px;
             overflow-y: auto;
         }
 
+        /* Tek Tıkla Kopyalanabilir Snippet Kartları */
         .snippet-card {
-            background: rgba(9, 14, 25, 0.85);
-            border: 1px solid rgba(56, 189, 248, 0.12);
+            background: rgba(8, 14, 25, 0.9);
+            border: 1px solid rgba(56, 189, 248, 0.15);
             border-left: 3px solid var(--text-secondary);
             padding: 8px 12px;
             margin: 6px 0;
@@ -487,7 +530,7 @@
 
         .snippet-copy-btn {
             background: rgba(56, 189, 248, 0.1);
-            border: 1px solid rgba(56, 189, 248, 0.3);
+            border: 1px solid rgba(56, 189, 248, 0.35);
             color: var(--text-secondary);
             font-family: inherit;
             font-size: 10px;
@@ -499,7 +542,8 @@
 
         .snippet-copy-btn:hover {
             background: var(--text-secondary);
-            color: #04070d;
+            color: #030712;
+            font-weight: bold;
         }
 
         .snippet-code {
@@ -511,11 +555,12 @@
             border: 1px solid rgba(0, 255, 102, 0.15);
             overflow-x: auto;
             user-select: all;
+            line-height: 1.4;
         }
 
         .hud-footer {
-            flex-shrink: 0;
-            padding-top: 8px;
+            margin-top: auto;
+            padding-top: 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -536,7 +581,7 @@
 </head>
 <body>
 
-<!-- Background Matrix Canvas -->
+<!-- Background Matrix Digital Rain -->
 <canvas id="matrix-canvas"></canvas>
 
 <!-- SECURE AUTHENTICATION SCREEN -->
@@ -544,7 +589,7 @@
     <div class="login-box" id="login-box-card">
         <div class="login-header">
             <span>[ SECURE_AUTH // C2_NODE ]</span>
-            <span style="font-size: 11px; color: var(--text-secondary);">v4.9-LTS</span>
+            <span style="font-size: 10px; color: var(--text-secondary);">v5.2-PRO</span>
         </div>
         <div class="login-prompt">
             Erişim yetkilendirmesi gereklidir. Sistem kimliği ve güvenlik tokenini doğrulayın:
@@ -586,7 +631,7 @@
 
         <div class="hud-stats-zone">
             <div class="hud-stat-item">PUBLIC_IP: <span id="public-ip-badge">Sorgulanıyor...</span></div>
-            <div class="hud-stat-item">TIME: <span id="hud-clock">00:00:00 UTC</span></div>
+            <div class="hud-stat-item">TIME: <span id="hud-clock">00:00:00 LOC</span></div>
             <div class="hud-stat-item">OPERATOR: <span>ADEM_OZKARA [ANKA]</span></div>
             <button class="hud-lock-btn" type="button" onclick="terminateSession()">[ TERMINATE_LOCK ]</button>
         </div>
@@ -596,487 +641,510 @@
     <div class="cmd-bar">
         <span class="cmd-prefix">$ grep -i / exec:</span>
         <input type="text" id="console-cmd-input" class="cmd-input" 
-               placeholder="Öğe arayın veya komut yazın (örn: ping 1.1.1.1, dns google.com, cidr, clear)..."
+               placeholder="Öğe arayın veya komut yazın (örn: ping 1.1.1.1, dns google.com, cidr 24, clear)..."
                oninput="handleGrepFilter()" onkeydown="handleCommandLine(event)">
         <span class="cmd-helper-hint">ENTER: RUN CMD | ESC: CLEAR</span>
     </div>
 
-    <!-- DIRECTORY LISTING ACCORDIONS -->
-    <div class="directory-container" id="directory-accordion-root">
+    <!-- 3-SÜTUNLU OPERASYONEL DÜZEN -->
+    <div class="operations-grid" id="operations-grid-root">
 
-        <!-- 0. SYSTEM DIAGNOSTICS & NETWORK TOOLS -->
-        <div class="folder-item active" data-folder="system_diagnostics">
-            <div class="folder-header" onclick="toggleFolder(this)">
-                <div class="folder-title-left">
-                    <span class="folder-arrow">▸</span>
-                    <span>system_diagnostics/</span>
-                </div>
-                <span class="folder-meta-count">4 test scripts</span>
+        <!-- ================= SÜTUN 1: RECON & SYSTEM DIAGNOSTICS ================= -->
+        <div class="column-module">
+            <div class="column-header">
+                <span>01 // DIAGNOSTICS & RECON</span>
+                <span>[NET_ANALYZERS]</span>
             </div>
-            <div class="folder-body">
-                <div class="file-list">
-                    <button class="file-entry" type="button" onclick="triggerPingAction()">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">sh_run_ping_test.sh</span>
-                        <span class="file-desc">// Özel Hedef IP veya Domain için ICMP gecikme testi</span>
-                        <span class="file-action-tag">[EXECUTE]</span>
-                    </button>
-                    <div id="ping-console-output" class="terminal-screen"></div>
 
-                    <button class="file-entry" type="button" onclick="triggerSpeedTestAction()">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">sh_run_speed_test.sh</span>
-                        <span class="file-desc">// Bant genişliği indirme ve yükleme akış ölçümü</span>
-                        <span class="file-action-tag">[EXECUTE]</span>
-                    </button>
-                    <div id="speed-console-output" class="terminal-screen"></div>
-
-                    <button class="file-entry" type="button" onclick="triggerDnsLookupAction()">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">sh_run_dns_lookup.sh</span>
-                        <span class="file-desc">// Hedef alan adı için A, MX, NS, TXT kayıt sorgusu</span>
-                        <span class="file-action-tag">[EXECUTE]</span>
-                    </button>
-                    <div id="dns-console-output" class="terminal-screen"></div>
-
-                    <button class="file-entry" type="button" onclick="triggerCidrCalcAction()">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">sh_run_cidr_calc.sh</span>
-                        <span class="file-desc">// IP Alt ağ (Subnet Mask) & Kullanılabilir Host hesaplayıcı</span>
-                        <span class="file-action-tag">[EXECUTE]</span>
-                    </button>
-                    <div id="cidr-console-output" class="terminal-screen"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 1. LEARNING CHEATSHEETS & QUICK COMMANDS -->
-        <div class="folder-item active" data-folder="learning_cheatsheets">
-            <div class="folder-header" onclick="toggleFolder(this)">
-                <div class="folder-title-left">
-                    <span class="folder-arrow">▸</span>
-                    <span>learning_cheatsheets/</span>
-                </div>
-                <span class="folder-meta-count">SysAdmin & AD CLI Snippets</span>
-            </div>
-            <div class="folder-body">
-                <div class="file-list">
-                    
-                    <div class="snippet-card">
-                        <div class="snippet-header">
-                            <span class="snippet-title">Active Directory - Kullanıcı & Grup Denetimi (CMD & PowerShell)</span>
-                            <button class="snippet-copy-btn" type="button" onclick="copySnippet(this, 'net user /domain\nnet group \'Domain Admins\' /domain\nGet-ADUser -Filter * -Properties DisplayName,EmailAddress | Select Name,SamAccountName')">Kopyala</button>
-                        </div>
-                        <div class="snippet-code">net user /domain &amp;&amp; net group "Domain Admins" /domain<br>Get-ADUser -Filter * -Properties DisplayName,EmailAddress | Select Name,SamAccountName</div>
+            <!-- 0. SYSTEM DIAGNOSTICS -->
+            <div class="folder-item active" data-folder="system_diagnostics">
+                <div class="folder-header" onclick="toggleFolder(this)">
+                    <div class="folder-title-left">
+                        <span class="folder-arrow">▸</span>
+                        <span>system_diagnostics/</span>
                     </div>
+                    <span class="folder-meta-count">4 test scripts</span>
+                </div>
+                <div class="folder-body">
+                    <div class="file-list">
+                        <button class="file-entry" type="button" onclick="triggerPingAction()">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">sh_run_ping_test.sh</span>
+                            <span class="file-desc">// Özel Hedef IP/Domain ICMP testi</span>
+                            <span class="file-action-tag">[EXECUTE]</span>
+                        </button>
+                        <div id="ping-console-output" class="terminal-screen"></div>
 
-                    <div class="snippet-card">
-                        <div class="snippet-header">
-                            <span class="snippet-title">Domain Controller & FSMO Rol Keşfi</span>
-                            <button class="snippet-copy-btn" type="button" onclick="copySnippet(this, 'nltest /dclist:domain.local\nnetdom query fsmo\ngpupdate /force /boot')">Kopyala</button>
-                        </div>
-                        <div class="snippet-code">nltest /dclist:domain.local &amp;&amp; netdom query fsmo &amp;&amp; gpupdate /force</div>
+                        <button class="file-entry" type="button" onclick="triggerSpeedTestAction()">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">sh_run_speed_test.sh</span>
+                            <span class="file-desc">// Bant genişliği indirme ve yükleme akış ölçümü</span>
+                            <span class="file-action-tag">[EXECUTE]</span>
+                        </button>
+                        <div id="speed-console-output" class="terminal-screen"></div>
+
+                        <button class="file-entry" type="button" onclick="triggerDnsLookupAction()">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">sh_run_dns_lookup.sh</span>
+                            <span class="file-desc">// Hedef alan adı A, MX, NS sorgusu</span>
+                            <span class="file-action-tag">[EXECUTE]</span>
+                        </button>
+                        <div id="dns-console-output" class="terminal-screen"></div>
+
+                        <button class="file-entry" type="button" onclick="triggerCidrCalcAction()">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">sh_run_cidr_calc.sh</span>
+                            <span class="file-desc">// IP Subnet & Host hesaplayıcı</span>
+                            <span class="file-action-tag">[EXECUTE]</span>
+                        </button>
+                        <div id="cidr-console-output" class="terminal-screen"></div>
                     </div>
+                </div>
+            </div>
 
-                    <div class="snippet-card">
-                        <div class="snippet-header">
-                            <span class="snippet-title">Ağ Sorun Giderme & DNS Temizleme</span>
-                            <button class="snippet-copy-btn" type="button" onclick="copySnippet(this, 'ipconfig /flushdns &amp;&amp; ipconfig /registerdns\nnetstat -ano | findstr LISTENING\ntracert -d 8.8.8.8')">Kopyala</button>
-                        </div>
-                        <div class="snippet-code">ipconfig /flushdns &amp;&amp; ipconfig /registerdns &amp;&amp; netstat -ano | findstr LISTENING</div>
+            <!-- 1. DNS, NETWORK & TRAFFIC OPS -->
+            <div class="folder-item" data-folder="dns_network_ops">
+                <div class="folder-header" onclick="toggleFolder(this)">
+                    <div class="folder-title-left">
+                        <span class="folder-arrow">▸</span>
+                        <span>dns_network_ops/</span>
                     </div>
-
-                    <div class="snippet-card">
-                        <div class="snippet-header">
-                            <span class="snippet-title">Windows Güvenlik & Dosya Bütünlüğü Onarımı</span>
-                            <button class="snippet-copy-btn" type="button" onclick="copySnippet(this, 'sfc /scannow\nDISM /Online /Cleanup-Image /RestoreHealth\nchkdsk C: /f /r')">Kopyala</button>
-                        </div>
-                        <div class="snippet-code">sfc /scannow &amp;&amp; DISM /Online /Cleanup-Image /RestoreHealth</div>
+                    <span class="folder-meta-count">8 analyzers</span>
+                </div>
+                <div class="folder-body">
+                    <div class="file-list">
+                        <a href="https://www.wireshark.org/download.html" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Wireshark</span>
+                            <span class="file-desc">// Paket çözümleme ve protokol analizi</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://nmap.org/download.html" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Nmap_Zenmap</span>
+                            <span class="file-desc">// Ağ topolojisi ve güvenlik port tarayıcısı</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://mxtoolbox.com/" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">MXToolbox_DNS_Lookup</span>
+                            <span class="file-desc">// MX, SPF, DKIM, DMARC ve Blacklist</span>
+                            <span class="file-action-tag">[WEB_APP]</span>
+                        </a>
+                        <a href="https://bgp.he.net/" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Hurricane_Electric_BGP</span>
+                            <span class="file-desc">// Otonom sistem (ASN) ve IP Prefix rotaları</span>
+                            <span class="file-action-tag">[WEB_APP]</span>
+                        </a>
+                        <a href="https://www.advanced-ip-scanner.com/tr/" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Advanced_IP_Scanner</span>
+                            <span class="file-desc">// Hızlı LAN cihaz ve MAC tarayıcı</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://angryip.org/download/#windows" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Angry_IP_Scanner</span>
+                            <span class="file-desc">// Hızlı cross-platform IP aralık tarayıcısı</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://www.nirsoft.net/utils/multiple_ping_tool.html" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">PingInfoView</span>
+                            <span class="file-desc">// Yüzlerce IP'yi anlık pingleyen monitör</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://www.wireguard.com/install/" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">WireGuard_Client</span>
+                            <span class="file-desc">// Yüksek performanslı şifreli VPN tüneli</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
                     </div>
+                </div>
+            </div>
 
+            <!-- 2. INDUSTRIAL FIRMWARE -->
+            <div class="folder-item" data-folder="industrial_firmware">
+                <div class="folder-header" onclick="toggleFolder(this)">
+                    <div class="folder-title-left">
+                        <span class="folder-arrow">▸</span>
+                        <span>industrial_firmware/</span>
+                    </div>
+                    <span class="folder-meta-count">1 config repo</span>
+                </div>
+                <div class="folder-body">
+                    <div class="file-list">
+                        <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Teltonika_Router_Configs</span>
+                            <span class="file-desc">// Endüstriyel 4G Gateway ve APN arşivi</span>
+                            <span class="file-action-tag">[ARCHIVE]</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- 2. ACTIVE DIRECTORY & IDENTITY LABS -->
-        <div class="folder-item" data-folder="ad_domain_labs">
-            <div class="folder-header" onclick="toggleFolder(this)">
-                <div class="folder-title-left">
-                    <span class="folder-arrow">▸</span>
-                    <span>ad_domain_labs/</span>
-                </div>
-                <span class="folder-meta-count">5 enterprise items</span>
+        <!-- ================= SÜTUN 2: IDENTITY, AD LABS & CHEATSHEETS ================= -->
+        <div class="column-module">
+            <div class="column-header">
+                <span>02 // IDENTITY & SYSADMIN</span>
+                <span>[AD_&_CHEATSHEETS]</span>
             </div>
-            <div class="folder-body">
-                <div class="file-list">
-                    <a href="https://github.com/SpecterOps/BloodHound" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">BloodHound & SharpHound</span>
-                        <span class="file-desc">// Active Directory ilişki ve yetki yükseltme saldırı grafiği aracı</span>
-                        <span class="file-action-tag">[REPO]</span>
-                    </a>
-                    <a href="https://learn.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Sysinternals_Suite</span>
-                        <span class="file-desc">// Process Explorer, Autoruns, Procmon ve TCPView Windows analiz seti</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://learn.microsoft.com/en-us/troubleshoot/windows-server/system-management-components/remote-server-administration-tools" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">RSAT_Tools</span>
-                        <span class="file-desc">// Windows İstemci üzerinden AD DS, DNS, DHCP ve GPO yönetim araçları</span>
-                        <span class="file-action-tag">[DOCS]</span>
-                    </a>
-                    <a href="https://github.com/gentilkiwi/mimikatz" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Mimikatz</span>
-                        <span class="file-desc">// LSASS bellek analizi ve Kerberos Pass-the-Ticket araştırma kütüphanesi</span>
-                        <span class="file-action-tag">[REPO]</span>
-                    </a>
-                    <a href="https://learn.microsoft.com/en-us/windows-server/identity/laps/laps-overview" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Microsoft_LAPS</span>
-                        <span class="file-desc">// Yerel Yönetici Parolası Çözümü (Local Administrator Password Solution)</span>
-                        <span class="file-action-tag">[PORTAL]</span>
-                    </a>
+
+            <!-- 3. LEARNING CHEATSHEETS -->
+            <div class="folder-item active" data-folder="learning_cheatsheets">
+                <div class="folder-header" onclick="toggleFolder(this)">
+                    <div class="folder-title-left">
+                        <span class="folder-arrow">▸</span>
+                        <span>learning_cheatsheets/</span>
+                    </div>
+                    <span class="folder-meta-count">SysAdmin & AD Snippets</span>
+                </div>
+                <div class="folder-body">
+                    <div class="file-list">
+                        <div class="snippet-card">
+                            <div class="snippet-header">
+                                <span class="snippet-title">AD Kullanıcı & Grup Denetimi</span>
+                                <button class="snippet-copy-btn" type="button" onclick="copySnippet(this, 'net user /domain\nnet group \'Domain Admins\' /domain\nGet-ADUser -Filter * -Properties DisplayName,EmailAddress | Select Name,SamAccountName')">Kopyala</button>
+                            </div>
+                            <div class="snippet-code">net user /domain &amp;&amp; net group "Domain Admins" /domain<br>Get-ADUser -Filter * | Select Name,SamAccountName</div>
+                        </div>
+
+                        <div class="snippet-card">
+                            <div class="snippet-header">
+                                <span class="snippet-title">Domain Controller & FSMO Rol Keşfi</span>
+                                <button class="snippet-copy-btn" type="button" onclick="copySnippet(this, 'nltest /dclist:domain.local\nnetdom query fsmo\ngpupdate /force /boot')">Kopyala</button>
+                            </div>
+                            <div class="snippet-code">nltest /dclist:domain.local &amp;&amp; netdom query fsmo &amp;&amp; gpupdate /force</div>
+                        </div>
+
+                        <div class="snippet-card">
+                            <div class="snippet-header">
+                                <span class="snippet-title">Ağ Sorun Giderme & DNS Temizleme</span>
+                                <button class="snippet-copy-btn" type="button" onclick="copySnippet(this, 'ipconfig /flushdns &amp;&amp; ipconfig /registerdns\nnetstat -ano | findstr LISTENING\ntracert -d 8.8.8.8')">Kopyala</button>
+                            </div>
+                            <div class="snippet-code">ipconfig /flushdns &amp;&amp; ipconfig /registerdns &amp;&amp; netstat -ano | findstr LISTENING</div>
+                        </div>
+
+                        <div class="snippet-card">
+                            <div class="snippet-header">
+                                <span class="snippet-title">Windows Güvenlik & Dosya Bütünlüğü</span>
+                                <button class="snippet-copy-btn" type="button" onclick="copySnippet(this, 'sfc /scannow\nDISM /Online /Cleanup-Image /RestoreHealth\nchkdsk C: /f /r')">Kopyala</button>
+                            </div>
+                            <div class="snippet-code">sfc /scannow &amp;&amp; DISM /Online /Cleanup-Image /RestoreHealth</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. ACTIVE DIRECTORY LABS -->
+            <div class="folder-item" data-folder="ad_domain_labs">
+                <div class="folder-header" onclick="toggleFolder(this)">
+                    <div class="folder-title-left">
+                        <span class="folder-arrow">▸</span>
+                        <span>ad_domain_labs/</span>
+                    </div>
+                    <span class="folder-meta-count">5 enterprise items</span>
+                </div>
+                <div class="folder-body">
+                    <div class="file-list">
+                        <a href="https://github.com/SpecterOps/BloodHound" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">BloodHound & SharpHound</span>
+                            <span class="file-desc">// Active Directory yetki yükseltme saldırı grafiği</span>
+                            <span class="file-action-tag">[REPO]</span>
+                        </a>
+                        <a href="https://learn.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Sysinternals_Suite</span>
+                            <span class="file-desc">// Process Explorer, Procmon, Autoruns, TCPView</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://learn.microsoft.com/en-us/troubleshoot/windows-server/system-management-components/remote-server-administration-tools" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">RSAT_Tools</span>
+                            <span class="file-desc">// AD DS, DNS, DHCP ve GPO istemci yönetim araçları</span>
+                            <span class="file-action-tag">[DOCS]</span>
+                        </a>
+                        <a href="https://github.com/gentilkiwi/mimikatz" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Mimikatz</span>
+                            <span class="file-desc">// LSASS bellek analizi ve Kerberos Pass-the-Ticket</span>
+                            <span class="file-action-tag">[REPO]</span>
+                        </a>
+                        <a href="https://learn.microsoft.com/en-us/windows-server/identity/laps/laps-overview" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Microsoft_LAPS</span>
+                            <span class="file-desc">// Yerel Yönetici Parolası Çözümü (LAPS)</span>
+                            <span class="file-action-tag">[PORTAL]</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. DATABASE ENGINES -->
+            <div class="folder-item" data-folder="database_engines">
+                <div class="folder-header" onclick="toggleFolder(this)">
+                    <div class="folder-title-left">
+                        <span class="folder-arrow">▸</span>
+                        <span>database_engines/</span>
+                    </div>
+                    <span class="folder-meta-count">2 RDBMS packages</span>
+                </div>
+                <div class="folder-body">
+                    <div class="file-list">
+                        <a href="https://www.microsoft.com/en-us/sql-server/sql-server-downloads" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">MS_SQL_Server_Express</span>
+                            <span class="file-desc">// Kurumsal ilişkisel veri tabanı motoru & SSMS</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://dev.mysql.com/downloads/installer/" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">MySQL_Community_Server</span>
+                            <span class="file-desc">// RDBMS sunucusu ve Workbench aracı</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- 3. DNS, NETWORK & TRAFFIC OPERATIONS -->
-        <div class="folder-item" data-folder="dns_network_ops">
-            <div class="folder-header" onclick="toggleFolder(this)">
-                <div class="folder-title-left">
-                    <span class="folder-arrow">▸</span>
-                    <span>dns_network_ops/</span>
-                </div>
-                <span class="folder-meta-count">8 network analyzers</span>
+        <!-- ================= SÜTUN 3: OFFENSIVE, OS & REMOTES ================= -->
+        <div class="column-module">
+            <div class="column-header">
+                <span>03 // OFFENSIVE & INFRASTRUCTURE</span>
+                <span>[PENTEST_&_SYSTEMS]</span>
             </div>
-            <div class="folder-body">
-                <div class="file-list">
-                    <a href="https://www.wireshark.org/download.html" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Wireshark</span>
-                        <span class="file-desc">// Derinlemesine paket çözümleme ve ağ protokol analizi</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://nmap.org/download.html" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Nmap_Zenmap</span>
-                        <span class="file-desc">// Ağ topolojisi keşfi, OS parmak izi ve güvenlik port tarayıcısı</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://mxtoolbox.com/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">MXToolbox_DNS_Lookup</span>
-                        <span class="file-desc">// A, MX, SPF, DKIM, DMARC ve kara liste (Blacklist) kayıt denetimi</span>
-                        <span class="file-action-tag">[WEB_APP]</span>
-                    </a>
-                    <a href="https://bgp.he.net/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Hurricane_Electric_BGP_Toolkit</span>
-                        <span class="file-desc">// Otonom sistem (ASN), IP Prefix rotaları ve Whois haritalandırma</span>
-                        <span class="file-action-tag">[WEB_APP]</span>
-                    </a>
-                    <a href="https://www.advanced-ip-scanner.com/tr/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Advanced_IP_Scanner</span>
-                        <span class="file-desc">// Hızlı yerel ağ (LAN) cihaz ve MAC adres tarama konsolu</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://angryip.org/download/#windows" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Angry_IP_Scanner</span>
-                        <span class="file-desc">// Hafif ve çok kanallı cross-platform IP aralık tarayıcısı</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://www.nirsoft.net/utils/multiple_ping_tool.html" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">PingInfoView</span>
-                        <span class="file-desc">// Yüzlerce IP ve alan adını kesintisiz pingleyen IT monitörü</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://www.wireguard.com/install/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">WireGuard_Client</span>
-                        <span class="file-desc">// Yeni nesil, yüksek performanslı şifreli VPN tünelleme modülü</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                </div>
-            </div>
-        </div>
 
-        <!-- 4. VULNERABILITY & EXPLOITATION -->
-        <div class="folder-item" data-folder="vulnerability_labs">
-            <div class="folder-header" onclick="toggleFolder(this)">
-                <div class="folder-title-left">
-                    <span class="folder-arrow">▸</span>
-                    <span>vulnerability_labs/</span>
+            <!-- 6. VULNERABILITY & EXPLOITATION -->
+            <div class="folder-item" data-folder="vulnerability_labs">
+                <div class="folder-header" onclick="toggleFolder(this)">
+                    <div class="folder-title-left">
+                        <span class="folder-arrow">▸</span>
+                        <span>vulnerability_labs/</span>
+                    </div>
+                    <span class="folder-meta-count">4 pentest suites</span>
                 </div>
-                <span class="folder-meta-count">4 pentest suites</span>
-            </div>
-            <div class="folder-body">
-                <div class="file-list">
-                    <a href="https://portswigger.net/burp/communitydownload" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Burp_Suite_CE</span>
-                        <span class="file-desc">// Web uygulama sızma testleri, Repeater ve HTTP trafik proxy aracı</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://github.com/rapid7/metasploit-framework/wiki/Nightly-Installers" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Metasploit_Framework</span>
-                        <span class="file-desc">// Zafiyet sömürü ve gelişmiş payload geliştirme konsolu</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://sourceforge.net/projects/metasploitable/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Metasploitable_Linux</span>
-                        <span class="file-desc">// Sanal laboratuvar için bilerek zafiyetli tasarlanmış test imajı</span>
-                        <span class="file-action-tag">[IMAGE]</span>
-                    </a>
-                    <a href="https://github.com/digininja/DVWA" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">DVWA_App</span>
-                        <span class="file-desc">// SQLi, XSS ve CSRF güvenlik denemeleri için açık kaynak web lab</span>
-                        <span class="file-action-tag">[REPO]</span>
-                    </a>
+                <div class="folder-body">
+                    <div class="file-list">
+                        <a href="https://portswigger.net/burp/communitydownload" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Burp_Suite_CE</span>
+                            <span class="file-desc">// Web uygulama sızma testleri & Repeater</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://github.com/rapid7/metasploit-framework/wiki/Nightly-Installers" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Metasploit_Framework</span>
+                            <span class="file-desc">// Zafiyet sömürü ve payload geliştirme konsolu</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://sourceforge.net/projects/metasploitable/" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Metasploitable_Linux</span>
+                            <span class="file-desc">// Zafiyetli tasarlanmış test makinesi imajı</span>
+                            <span class="file-action-tag">[IMAGE]</span>
+                        </a>
+                        <a href="https://github.com/digininja/DVWA" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">DVWA_App</span>
+                            <span class="file-desc">// SQLi, XSS ve CSRF denemeleri için web lab</span>
+                            <span class="file-action-tag">[REPO]</span>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- 5. OPERATING SYSTEMS & HYPERVISORS -->
-        <div class="folder-item" data-folder="operating_systems">
-            <div class="folder-header" onclick="toggleFolder(this)">
-                <div class="folder-title-left">
-                    <span class="folder-arrow">▸</span>
-                    <span>operating_systems/</span>
+            <!-- 7. OPERATING SYSTEMS & HYPERVISORS -->
+            <div class="folder-item" data-folder="operating_systems">
+                <div class="folder-header" onclick="toggleFolder(this)">
+                    <div class="folder-title-left">
+                        <span class="folder-arrow">▸</span>
+                        <span>operating_systems/</span>
+                    </div>
+                    <span class="folder-meta-count">6 hypervisor & ISOs</span>
                 </div>
-                <span class="folder-meta-count">6 hypervisor & ISOs</span>
-            </div>
-            <div class="folder-body">
-                <div class="file-list">
-                    <a href="https://docs.google.com/uc?export=download&id=1bbRk2Lt4OFr1NksBb-5wA1gaBDs7rpVd" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">VMware_Workstation_Pro</span>
-                        <span class="file-desc">// Güvenli Drive deposundan direkt kurulum paketi</span>
-                        <span class="file-action-tag">[DIRECT_DL]</span>
-                    </a>
-                    <a href="https://www.kali.org/get-kali/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Kali_Linux_ISO</span>
-                        <span class="file-desc">// Siber güvenlik, adli bilişim ve pentest işletim sistemi</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Windows_Server_2022_ISO</span>
-                        <span class="file-desc">// Active Directory Domain Services (AD DS) resmi değerlendirme ISO</span>
-                        <span class="file-action-tag">[EVALUATION]</span>
-                    </a>
-                    <a href="https://www.pfsense.org/download/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">pfSense_Firewall_ISO</span>
-                        <span class="file-desc">// Açık kaynak kurumsal ağ yönlendirici ve güvenlik duvarı imajı</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://www.microsoft.com/tr-tr/software-download/windows10ISO" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Windows_10_Client_ISO</span>
-                        <span class="file-desc">// Kurumsal etki alanı istemci test ortamı kurulum kalıbı</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://www.microsoft.com/tr-tr/software-download/windows11" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Windows_11_Enterprise_ISO</span>
-                        <span class="file-desc">// Güncel modern endpoint güvenlik ve analiz kalıbı</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
+                <div class="folder-body">
+                    <div class="file-list">
+                        <a href="https://docs.google.com/uc?export=download&id=1bbRk2Lt4OFr1NksBb-5wA1gaBDs7rpVd" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">VMware_Workstation_Pro</span>
+                            <span class="file-desc">// Güvenli Drive deposundan direkt kurulum paketi</span>
+                            <span class="file-action-tag">[DIRECT_DL]</span>
+                        </a>
+                        <a href="https://www.kali.org/get-kali/" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Kali_Linux_ISO</span>
+                            <span class="file-desc">// Siber güvenlik, adli bilişim ve pentest OS</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Windows_Server_2022_ISO</span>
+                            <span class="file-desc">// Active Directory Domain Services (AD DS) resmi ISO</span>
+                            <span class="file-action-tag">[EVALUATION]</span>
+                        </a>
+                        <a href="https://www.pfsense.org/download/" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">pfSense_Firewall_ISO</span>
+                            <span class="file-desc">// Açık kaynak kurumsal güvenlik duvarı imajı</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://www.microsoft.com/tr-tr/software-download/windows10ISO" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Windows_10_Client_ISO</span>
+                            <span class="file-desc">// Kurumsal etki alanı istemci test kurulumu</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://www.microsoft.com/tr-tr/software-download/windows11" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Windows_11_Enterprise_ISO</span>
+                            <span class="file-desc">// Güncel modern endpoint güvenlik ve analiz kalıbı</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- 6. REMOTE ACCESS & TERMINAL MANAGEMENT -->
-        <div class="folder-item" data-folder="remote_management">
-            <div class="folder-header" onclick="toggleFolder(this)">
-                <div class="folder-title-left">
-                    <span class="folder-arrow">▸</span>
-                    <span>remote_management/</span>
+            <!-- 8. REMOTE MANAGEMENT -->
+            <div class="folder-item" data-folder="remote_management">
+                <div class="folder-header" onclick="toggleFolder(this)">
+                    <div class="folder-title-left">
+                        <span class="folder-arrow">▸</span>
+                        <span>remote_management/</span>
+                    </div>
+                    <span class="folder-meta-count">5 remote clients</span>
                 </div>
-                <span class="folder-meta-count">5 remote clients</span>
-            </div>
-            <div class="folder-body">
-                <div class="file-list">
-                    <a href="https://www.putty.org/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">PuTTY</span>
-                        <span class="file-desc">// SSH, Telnet ve Seri konsol bağlantı istemcisi</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://mobaxterm.mobatek.net/download.html" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">MobaXterm_Home</span>
-                        <span class="file-desc">// Gelişmiş X11 sunucusu, sekmeli SSH ve SFTP yönetim konsolu</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://anydesk.com/tr/downloads/windows" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">AnyDesk</span>
-                        <span class="file-desc">// Hızlı, düşük gecikmeli uzak masaüstü bağlantı istemcisi</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://www.teamviewer.com/tr/download/windows/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">TeamViewer</span>
-                        <span class="file-desc">// IT destek ve uzaktan yardım yazılımı</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://www.teamviewer.com/tr/download/windows/#host" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">TeamViewer_Host</span>
-                        <span class="file-desc">// Sunucu ve test cihazları için 7/24 kesintisiz arka plan erişimi</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
+                <div class="folder-body">
+                    <div class="file-list">
+                        <a href="https://www.putty.org/" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">PuTTY</span>
+                            <span class="file-desc">// SSH, Telnet ve Seri konsol bağlantı istemcisi</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://mobaxterm.mobatek.net/download.html" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">MobaXterm_Home</span>
+                            <span class="file-desc">// X11 sunucusu, sekmeli SSH ve SFTP paneli</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://anydesk.com/tr/downloads/windows" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">AnyDesk</span>
+                            <span class="file-desc">// Düşük gecikmeli uzak masaüstü istemcisi</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://www.teamviewer.com/tr/download/windows/" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">TeamViewer</span>
+                            <span class="file-desc">// IT destek ve uzaktan yardım yazılımı</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://www.teamviewer.com/tr/download/windows/#host" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">TeamViewer_Host</span>
+                            <span class="file-desc">// Sunucu ve test cihazları kesintisiz erişim</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- 7. FORENSICS, CREDENTIALS & TROUBLESHOOT -->
-        <div class="folder-item" data-folder="forensics_credentials">
-            <div class="folder-header" onclick="toggleFolder(this)">
-                <div class="folder-title-left">
-                    <span class="folder-arrow">▸</span>
-                    <span>forensics_credentials/</span>
+            <!-- 9. FORENSICS & UTILITIES -->
+            <div class="folder-item" data-folder="forensics_credentials">
+                <div class="folder-header" onclick="toggleFolder(this)">
+                    <div class="folder-title-left">
+                        <span class="folder-arrow">▸</span>
+                        <span>forensics_credentials/</span>
+                    </div>
+                    <span class="folder-meta-count">6 utility tools</span>
                 </div>
-                <span class="folder-meta-count">6 utility tools</span>
-            </div>
-            <div class="folder-body">
-                <div class="file-list">
-                    <a href="https://gchq.github.io/CyberChef/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">CyberChef_GCHQ</span>
-                        <span class="file-desc">// Veri şifreleme/çözme, hash ve log analiz 'İsviçre Çakısı'</span>
-                        <span class="file-action-tag">[WEB_APP]</span>
-                    </a>
-                    <a href="https://bitwarden.com/download/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Bitwarden</span>
-                        <span class="file-desc">// Sıfır bilgili (Zero-Knowledge) açık kaynak parola ve anahtar kasası</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://rufus.ie/tr/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Rufus_USB_Creator</span>
-                        <span class="file-desc">// UEFI / GPT önyüklenebilir USB işletim sistemi medyası oluşturucu</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://crystalmark.info/en/software/crystaldiskinfo/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">CrystalDiskInfo</span>
-                        <span class="file-desc">// S.M.A.R.T. disk sağlığı, aşınma ve sıcaklık teşhis takibi</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://www.cpuid.com/softwares/hwmonitor.html" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">HWMonitor</span>
-                        <span class="file-desc">// İşlemci, anakart ve voltaj sensörleri gerçek zamanlı izleyici</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://www.revouninstaller.com/revo-uninstaller-free-download/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Revo_Uninstaller</span>
-                        <span class="file-desc">// Kayıt defteri (Registry) kalıntılarını temizleyen kaldırıcı</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
+                <div class="folder-body">
+                    <div class="file-list">
+                        <a href="https://gchq.github.io/CyberChef/" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">CyberChef_GCHQ</span>
+                            <span class="file-desc">// Veri şifreleme/çözme, hash ve log analizi</span>
+                            <span class="file-action-tag">[WEB_APP]</span>
+                        </a>
+                        <a href="https://bitwarden.com/download/" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Bitwarden</span>
+                            <span class="file-desc">// Sıfır bilgili açık kaynak parola kasası</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://rufus.ie/tr/" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Rufus_USB_Creator</span>
+                            <span class="file-desc">// UEFI / GPT önyüklenebilir USB oluşturucu</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://crystalmark.info/en/software/crystaldiskinfo/" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">CrystalDiskInfo</span>
+                            <span class="file-desc">// S.M.A.R.T. disk sağlığı teşhis takibi</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://www.cpuid.com/softwares/hwmonitor.html" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">HWMonitor</span>
+                            <span class="file-desc">// İşlemci, anakart ve voltaj sensörleri monitörü</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://www.revouninstaller.com/revo-uninstaller-free-download/" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Revo_Uninstaller</span>
+                            <span class="file-desc">// Kayıt defteri kalıntılarını temizleyen kaldırıcı</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- 8. DATABASE ENGINES & REPOSITORIES -->
-        <div class="folder-item" data-folder="database_engines">
-            <div class="folder-header" onclick="toggleFolder(this)">
-                <div class="folder-title-left">
-                    <span class="folder-arrow">▸</span>
-                    <span>database_engines/</span>
+            <!-- 10. DEPLOYMENT TOOLKITS -->
+            <div class="folder-item" data-folder="deployment_toolkits">
+                <div class="folder-header" onclick="toggleFolder(this)">
+                    <div class="folder-title-left">
+                        <span class="folder-arrow">▸</span>
+                        <span>deployment_toolkits/</span>
+                    </div>
+                    <span class="folder-meta-count">4 workstation tools</span>
                 </div>
-                <span class="folder-meta-count">2 RDBMS packages</span>
-            </div>
-            <div class="folder-body">
-                <div class="file-list">
-                    <a href="https://www.microsoft.com/en-us/sql-server/sql-server-downloads" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">MS_SQL_Server_Express</span>
-                        <span class="file-desc">// Kurumsal ilişkisel veri tabanı motoru ve SSMS paketi</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://dev.mysql.com/downloads/installer/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">MySQL_Community_Server</span>
-                        <span class="file-desc">// Açık kaynak RDBMS sunucusu ve Workbench geliştirme aracı</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
+                <div class="folder-body">
+                    <div class="file-list">
+                        <a href="https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Visual_Studio_Code</span>
+                            <span class="file-desc">// PowerShell, Python & Shell IDE</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://www.win-rar.com/postdownload.html" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">WinRAR</span>
+                            <span class="file-desc">// Arşiv ve paketleme yöneticisi</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://www.libreoffice.org/download/download-libreoffice/" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">LibreOffice</span>
+                            <span class="file-desc">// IT dokümantasyon ve raporlama paketi</span>
+                            <span class="file-action-tag">[DOWNLOAD]</span>
+                        </a>
+                        <a href="https://drive.google.com/drive/folders/15J6Zr1fbSzyL5UvM99VxRNCnLtNYeow2?usp=drive_link" target="_blank" rel="noopener noreferrer" class="file-entry">
+                            <span class="file-bullet">▸</span>
+                            <span class="file-name">Secured_Cloud_Backup</span>
+                            <span class="file-desc">// Google Drive yetkili veri ve profil yedek havuzu</span>
+                            <span class="file-action-tag">[CLOUD]</span>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- 9. INDUSTRIAL FIRMWARE & CONFIGS -->
-        <div class="folder-item" data-folder="industrial_firmware">
-            <div class="folder-header" onclick="toggleFolder(this)">
-                <div class="folder-title-left">
-                    <span class="folder-arrow">▸</span>
-                    <span>industrial_firmware/</span>
-                </div>
-                <span class="folder-meta-count">1 config repository</span>
-            </div>
-            <div class="folder-body">
-                <div class="file-list">
-                    <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Teltonika_Router_Configs</span>
-                        <span class="file-desc">// Endüstriyel 4G/LTE Gateway, APN parametreleri ve SMS komut arşivi</span>
-                        <span class="file-action-tag">[ARCHIVE]</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- 10. DEPLOYMENT TOOLKITS & STORAGE -->
-        <div class="folder-item" data-folder="deployment_toolkits">
-            <div class="folder-header" onclick="toggleFolder(this)">
-                <div class="folder-title-left">
-                    <span class="folder-arrow">▸</span>
-                    <span>deployment_toolkits/</span>
-                </div>
-                <span class="folder-meta-count">4 workstation tools</span>
-            </div>
-            <div class="folder-body">
-                <div class="file-list">
-                    <a href="https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Visual_Studio_Code</span>
-                        <span class="file-desc">// PowerShell, Python ve Shell script geliştirme IDE ortamı</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://www.win-rar.com/postdownload.html" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">WinRAR</span>
-                        <span class="file-desc">// Yüksek sıkıştırma oranlı arşiv ve paketleme yöneticisi</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://www.libreoffice.org/download/download-libreoffice/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">LibreOffice</span>
-                        <span class="file-desc">// Açık kaynak IT dokümantasyon, form ve raporlama paketi</span>
-                        <span class="file-action-tag">[DOWNLOAD]</span>
-                    </a>
-                    <a href="https://drive.google.com/drive/folders/15J6Zr1fbSzyL5UvM99VxRNCnLtNYeow2?usp=drive_link" target="_blank" rel="noopener noreferrer" class="file-entry">
-                        <span class="file-bullet">▸</span>
-                        <span class="file-name">Secured_Cloud_Backup</span>
-                        <span class="file-desc">// Google Drive yetkili operasyonel veri ve profil yedek havuzu</span>
-                        <span class="file-action-tag">[CLOUD]</span>
-                    </a>
-                </div>
-            </div>
         </div>
 
     </div>
@@ -1093,7 +1161,7 @@
     /* =========================================================
        1. AUTHENTICATION ENGINE (STRICT & REACTIVE)
        ========================================================= */
-    const AUTH_SESSION_KEY = "C2_STATION_AUTH_TOKEN_V2";
+    const AUTH_SESSION_KEY = "C2_STATION_AUTH_TOKEN_V3";
     const VALID_USER = "admin";
     const VALID_PASS = "4380";
 
@@ -1122,12 +1190,11 @@
         const userVal = userInputEl ? userInputEl.value.trim().toLowerCase() : "";
         const passVal = passInputEl ? passInputEl.value.trim() : "";
 
-        // Verification logic: user must be 'admin' (even if displayed with by anka label), password '4380'
+        // Verification logic: user is 'admin', password is '4380'
         if (userVal === VALID_USER && passVal === VALID_PASS) {
             sessionStorage.setItem(AUTH_SESSION_KEY, "VALIDATED_AUTHORIZED");
             if (errorEl) errorEl.style.display = "none";
             
-            // Visual success feedback
             if (cardBox) cardBox.style.borderColor = "var(--text-secondary)";
             overlay.style.opacity = "0";
             setTimeout(() => {
@@ -1198,14 +1265,13 @@
             }
         });
 
-        // Initialize HUD stats
         updateClock();
         setInterval(updateClock, 1000);
         fetchPublicIP();
     });
 
     /* =========================================================
-       2. HUD STATS: CLOCK & PUBLIC IP FETCH
+       2. HUD STATS: CLOCK & PUBLIC IP
        ========================================================= */
     function updateClock() {
         const now = new Date();
@@ -1229,7 +1295,7 @@
     }
 
     /* =========================================================
-       3. FOLDER ACCORDION TOGGLE
+       3. FOLDER TOGGLE & ACCORDION
        ========================================================= */
     function toggleFolder(headerElement) {
         const folder = headerElement.parentElement;
@@ -1237,7 +1303,7 @@
     }
 
     /* =========================================================
-       4. COMMAND EXECUTION & DYNAMIC GREP FILTERING
+       4. COMMAND EXECUTION & DYNAMIC MULTI-COLUMN FILTER
        ========================================================= */
     function handleGrepFilter() {
         const inputVal = document.getElementById('console-cmd-input').value.toLowerCase().trim();
@@ -1267,7 +1333,6 @@
                 }
             } else {
                 folder.style.display = 'block';
-                // Reset initial state: keep first 2 active
                 if (folder.dataset.folder === "system_diagnostics" || folder.dataset.folder === "learning_cheatsheets") {
                     folder.classList.add('active');
                 } else {
@@ -1327,7 +1392,7 @@
         if (parentFolder) parentFolder.classList.add('active');
 
         output.style.display = 'block';
-        output.innerText = `$ ping -c 4 ${target}\nPING ${target} (${target}) 56(84) bytes of data.\n[ICMP PAKETLERI GONDERILIYOR...]`;
+        output.innerText = `$ ping -c 4 ${target}\nPING ${target} (${target}) 56(84) bytes of data.\n[ICMP PAKETLERİ GÖNDERİLİYOR...]`;
 
         const start = performance.now();
         fetch('https://www.google.com/favicon.ico', { mode: 'no-cors', cache: 'no-store' })
@@ -1363,7 +1428,7 @@
         if (parentFolder) parentFolder.classList.add('active');
 
         output.style.display = 'block';
-        output.innerText = "$ speedtest-cli --secure\nRetrieving server configuration...\nTesting infrastructure throughput...\n[PAKET AKISI OLCULUYOR...]";
+        output.innerText = "$ speedtest-cli --secure\nRetrieving server configuration...\nTesting infrastructure throughput...\n[PAKET AKIŞI ÖLÇÜLÜYOR...]";
 
         const imageAddr = "https://upload.wikimedia.org/wikipedia/commons/3/3d/LARGE_elevation.jpg?r=" + Math.random();
         const downloadSize = 5000000;
@@ -1409,7 +1474,7 @@
         if (parentFolder) parentFolder.classList.add('active');
 
         output.style.display = 'block';
-        output.innerText = `$ dig +noall +answer ${domain} ANY\n; Querying authoritative root servers...\n[KAYITLAR COZULUYOR...]`;
+        output.innerText = `$ dig +noall +answer ${domain} ANY\n; Querying authoritative root servers...\n[KAYITLAR ÇÖZÜLÜYOR...]`;
 
         setTimeout(() => {
             let log = `$ dig +noall +answer ${domain} ANY\n\n`;
@@ -1484,7 +1549,7 @@
     }
 
     /* =========================================================
-       7. LOW-STRAIN DIGITAL MATRIX RAIN ENGINE
+       7. LOW-STRAIN DIGITAL MATRIX RAIN
        ========================================================= */
     const canvas = document.getElementById('matrix-canvas');
     const ctx = canvas.getContext('2d');
@@ -1506,7 +1571,7 @@
     }
 
     function renderMatrix() {
-        ctx.fillStyle = 'rgba(4, 7, 13, 0.08)';
+        ctx.fillStyle = 'rgba(3, 7, 18, 0.08)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.font = fontSize + 'px monospace';
 
@@ -1516,9 +1581,9 @@
             const y = drops[i] * fontSize;
 
             if (Math.random() > 0.985) {
-                ctx.fillStyle = 'rgba(56, 189, 248, 0.18)';
+                ctx.fillStyle = 'rgba(56, 189, 248, 0.2)';
             } else {
-                ctx.fillStyle = 'rgba(0, 255, 102, 0.11)';
+                ctx.fillStyle = 'rgba(0, 255, 102, 0.12)';
             }
 
             ctx.fillText(text, x, y);
