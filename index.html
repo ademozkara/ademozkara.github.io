@@ -3,1599 +3,576 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>C2-Console // Adem Özkara IT & Cyber Security Hub</title>
+    <title>C2 Command Console // Modern HUD</title>
     <style>
         :root {
-            --bg-color: #030712;
-            --panel-bg: rgba(9, 14, 26, 0.88);
-            --panel-sub: rgba(13, 22, 38, 0.7);
-            --text-main: #00ff66; /* Matrix Green */
-            --text-secondary: #38bdf8; /* Cyber Cyan */
-            --text-muted: #64748b;
-            --text-light: #cbd5e1;
-            --border-dim: rgba(56, 189, 248, 0.16);
-            --border-active: rgba(0, 255, 102, 0.45);
+            --bg-base: #03060a;
+            --panel-bg: rgba(7, 13, 22, 0.85);
+            --neon-green: #00ff66;
+            --neon-cyan: #38bdf8;
+            --text-dim: #74859a;
+            --border-line: rgba(56, 189, 248, 0.16);
             --alert-red: #f43f5e;
-            --code-bg: #020409;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
-        /* Akıcı ve doğal sayfa kaydırması için overflow kuralı */
         html, body {
             margin: 0;
             padding: 0;
-            width: 100%;
-            min-height: 100%;
-            background-color: var(--bg-color);
-            font-family: 'Consolas', 'Courier New', Monaco, monospace;
-            color: var(--text-light);
-            font-size: 13px;
+            background-color: var(--bg-base);
+            font-family: 'Courier New', Courier, monospace;
+            color: #e2e8f0;
+            min-height: 100vh;
             overflow-x: hidden;
-            overflow-y: auto;
+            overflow-y: auto; /* Kaydırma aktif */
         }
 
-        /* Özel Koyu Siber Kaydırma Çubuğu (Scrollbar) */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #02050b;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(56, 189, 248, 0.25);
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-main);
-        }
+        /* Özel Siber Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #03060a; }
+        ::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.25); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-green); }
 
-        /* Loş Matrix Yağmuru Canvas */
         #matrix-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: 1;
             pointer-events: none;
         }
 
-        /* Güvenlik Doğrulama Katmanı (Auth Overlay) */
-        #login-overlay {
+        /* KİMLİK DOĞRULAMA PENCERESİ */
+        #auth-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(3, 7, 18, 0.96);
-            backdrop-filter: blur(12px);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(3, 6, 10, 0.96);
+            backdrop-filter: blur(10px);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 99999;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
-
-        .login-box {
-            background: #080d19;
-            padding: 32px 36px;
-            border-radius: 4px;
-            border: 1px solid var(--text-main);
-            box-shadow: 0 0 35px rgba(0, 255, 102, 0.18), inset 0 0 15px rgba(0, 255, 102, 0.04);
+        .auth-card {
+            background: #09111c;
+            border: 1px solid var(--neon-green);
+            padding: 30px;
             width: 90%;
             max-width: 380px;
-            text-align: left;
-            position: relative;
+            box-shadow: 0 0 35px rgba(0, 255, 102, 0.15);
         }
-
-        .shake-anim {
-            animation: shakeKeyframes 0.35s ease-in-out;
-        }
-
-        @keyframes shakeKeyframes {
-            0%, 100% { transform: translateX(0); }
-            20% { transform: translateX(-8px); }
-            40% { transform: translateX(8px); }
-            60% { transform: translateX(-6px); }
-            80% { transform: translateX(6px); }
-        }
-
-        .login-header {
-            color: var(--text-main);
-            font-size: 13px;
-            margin-bottom: 15px;
-            border-bottom: 1px dashed rgba(0, 255, 102, 0.3);
+        .auth-header {
+            color: var(--neon-green);
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border-bottom: 1px dashed var(--border-line);
             padding-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            text-align: center;
         }
-
-        .login-prompt {
-            color: var(--text-secondary);
-            font-size: 11px;
-            margin-bottom: 16px;
-            line-height: 1.4;
-        }
-
-        .auth-field-group {
-            margin-bottom: 15px;
-        }
-
-        .auth-field-label {
+        .auth-label {
             display: flex;
             justify-content: space-between;
             font-size: 11px;
-            color: var(--text-muted);
+            color: var(--neon-cyan);
             margin-bottom: 6px;
         }
-
-        .auth-field-label span {
-            color: var(--text-secondary);
-            font-weight: bold;
-        }
-
         .auth-input {
             width: 100%;
-            padding: 9px 12px;
-            background: #02050d;
-            border: 1px solid var(--border-dim);
-            color: var(--text-main);
+            padding: 10px;
+            margin-bottom: 15px;
+            background: #04080e;
+            border: 1px solid var(--border-line);
+            color: #fff;
             font-family: inherit;
             font-size: 13px;
-            border-radius: 2px;
             outline: none;
-            transition: all 0.2s;
         }
-
-        .auth-input:focus {
-            border-color: var(--text-main);
-            box-shadow: 0 0 10px rgba(0, 255, 102, 0.25);
-        }
-
+        .auth-input:focus { border-color: var(--neon-cyan); }
         .auth-btn {
             width: 100%;
-            padding: 11px;
-            margin-top: 10px;
+            padding: 10px;
             background: rgba(0, 255, 102, 0.08);
-            border: 1px solid var(--text-main);
-            color: var(--text-main);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
             font-family: inherit;
             font-weight: bold;
-            font-size: 12px;
             cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            border-radius: 2px;
-            transition: all 0.2s;
         }
-
-        .auth-btn:hover {
-            background: rgba(0, 255, 102, 0.2);
-            box-shadow: 0 0 16px rgba(0, 255, 102, 0.35);
-        }
-
+        .auth-btn:hover { background: rgba(0, 255, 102, 0.2); }
         #auth-error {
+            display: none;
             color: var(--alert-red);
             font-size: 11px;
             margin-top: 10px;
-            display: none;
             text-align: center;
-            font-weight: bold;
         }
 
-        .main-layout {
+        /* ANA SAYFA İÇERİĞİ */
+        .workspace {
             position: relative;
-            z-index: 10;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding: 20px 24px 40px 24px;
-            max-width: 1440px;
+            z-index: 2;
+            padding: 25px;
+            max-width: 1500px;
             margin: 0 auto;
         }
 
-        /* Üst Telemetri HUD Başlığı */
-        .hud-header {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-dim);
-            border-radius: 4px;
-            padding: 12px 18px;
-            margin-bottom: 16px;
-            backdrop-filter: blur(10px);
+        /* TELEMETRİ / ÜST PANEL */
+        .telemetry-bar {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            gap: 12px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-line);
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            gap: 10px;
         }
-
-        .hud-title-zone {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .hud-title {
-            color: var(--text-main);
-            font-size: 15px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            margin: 0;
-        }
-
-        .badge {
-            background: rgba(0, 255, 102, 0.1);
-            border: 1px solid rgba(0, 255, 102, 0.3);
-            padding: 2px 7px;
-            border-radius: 3px;
-            font-size: 10px;
-            color: var(--text-main);
-        }
-
-        .badge-cyan {
-            background: rgba(56, 189, 248, 0.1);
-            border-color: rgba(56, 189, 248, 0.35);
-            color: var(--text-secondary);
-        }
-
-        .hud-stats-zone {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        .hud-stat-item span {
-            color: var(--text-secondary);
-            font-weight: bold;
-        }
-
-        .hud-lock-btn {
+        .telemetry-item span { color: var(--neon-cyan); font-weight: bold; }
+        .lock-btn {
             background: transparent;
-            border: 1px solid rgba(244, 63, 94, 0.35);
+            border: 1px solid var(--alert-red);
             color: var(--alert-red);
+            padding: 4px 10px;
             font-family: inherit;
             font-size: 11px;
-            padding: 4px 10px;
-            border-radius: 3px;
             cursor: pointer;
-            transition: all 0.2s;
         }
+        .lock-btn:hover { background: rgba(244, 63, 94, 0.15); }
 
-        .hud-lock-btn:hover {
-            background: rgba(244, 63, 94, 0.15);
-            box-shadow: 0 0 10px rgba(244, 63, 94, 0.35);
-        }
-
-        /* Canlı Komut & Arama Filtre Çubuğu */
+        /* ARAMA VE KOMUT SATIRI */
         .cmd-bar {
-            background: rgba(6, 11, 22, 0.9);
-            border: 1px solid var(--border-dim);
-            border-radius: 4px;
-            padding: 9px 16px;
-            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            backdrop-filter: blur(8px);
+            background: var(--panel-bg);
+            border: 1px solid var(--neon-green);
+            padding: 10px 16px;
+            margin-bottom: 25px;
         }
-
-        .cmd-prefix {
-            color: var(--text-main);
-            font-weight: bold;
-            font-size: 13px;
-            white-space: nowrap;
-        }
-
+        .cmd-prompt { color: var(--neon-green); margin-right: 10px; font-weight: bold; font-size: 13px; }
         .cmd-input {
             flex-grow: 1;
             background: transparent;
             border: none;
-            color: var(--text-main);
+            color: #fff;
             font-family: inherit;
             font-size: 13px;
             outline: none;
         }
+        .cmd-input::placeholder { color: var(--text-dim); }
 
-        .cmd-input::placeholder {
-            color: rgba(100, 116, 139, 0.55);
-        }
-
-        .cmd-helper-hint {
-            font-size: 11px;
-            color: var(--text-muted);
-            white-space: nowrap;
-        }
-
-        /* 3 Sütunlu Modüler Operasyon Izgarası (C2 Columns) */
-        .operations-grid {
+        /* 3 SÜTUNLU HUD IZGARA DÜZENİ */
+        .hud-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 20px;
+            align-items: start;
         }
-
-        @media (max-width: 1100px) {
-            .operations-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
-
-        @media (max-width: 768px) {
-            .operations-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .column-module {
+        .hud-col {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
         }
 
-        .column-header {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-secondary);
-            border-bottom: 1px dashed var(--border-dim);
+        /* MODÜL KARTLARI */
+        .module {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-line);
+            padding: 16px;
+            position: relative;
+        }
+        .module-title {
+            color: var(--neon-cyan);
+            font-size: 13px;
+            font-weight: bold;
+            margin: 0 0 12px 0;
+            border-bottom: 1px dashed var(--border-line);
             padding-bottom: 6px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
         }
-
-        .column-header span {
-            color: var(--text-muted);
-            font-size: 10px;
-        }
-
-        .folder-item {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-dim);
-            border-radius: 4px;
-            overflow: hidden;
-            transition: border-color 0.15s, background-color 0.15s;
-        }
-
-        .folder-item:hover {
-            border-color: rgba(56, 189, 248, 0.4);
-        }
-
-        .folder-header {
-            padding: 9px 14px;
-            background: rgba(12, 19, 34, 0.6);
-            color: var(--text-secondary);
-            font-size: 12px;
-            cursor: pointer;
+        .module-list {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            user-select: none;
-            transition: all 0.15s ease;
-        }
-
-        .folder-title-left {
-            display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 8px;
         }
-
-        .folder-arrow {
-            color: var(--text-main);
-            font-size: 10px;
-            display: inline-block;
-            transition: transform 0.2s ease;
-        }
-
-        .folder-item.active .folder-arrow {
-            transform: rotate(90deg);
-        }
-
-        .folder-item.active .folder-header {
-            color: var(--text-main);
-            border-bottom: 1px dashed rgba(56, 189, 248, 0.18);
-            background: rgba(0, 255, 102, 0.04);
-        }
-
-        .folder-meta-count {
-            font-size: 10px;
-            color: var(--text-muted);
-        }
-
-        .folder-body {
-            display: none;
-            padding: 10px 14px 12px 18px;
-            background: rgba(4, 8, 16, 0.55);
-        }
-
-        .folder-item.active .folder-body {
-            display: block;
-        }
-
-        .file-list {
+        .nav-link {
             display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .file-entry {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
+            align-items: baseline;
+            gap: 8px;
             color: #94a3b8;
+            text-decoration: none;
             font-size: 12px;
-            padding: 5px 8px;
-            border-radius: 2px;
-            transition: all 0.15s;
+            transition: color 0.15s;
             cursor: pointer;
-            border: 1px solid transparent;
             background: transparent;
-            width: 100%;
+            border: none;
+            padding: 0;
+            font-family: inherit;
             text-align: left;
-            font-family: inherit;
         }
+        .nav-link::before { content: "▸"; color: var(--neon-green); font-size: 11px; }
+        .nav-link:hover { color: #fff; }
+        .nav-link b { color: #f1f5f9; font-weight: normal; }
+        .nav-link span { color: #475569; font-size: 10px; }
 
-        .file-entry:hover {
-            color: #ffffff;
-            background: rgba(56, 189, 248, 0.08);
-            border-color: rgba(56, 189, 248, 0.25);
-            padding-left: 11px;
-        }
-
-        .file-bullet {
-            color: rgba(0, 255, 102, 0.7);
-            margin-right: 8px;
-            font-size: 10px;
-        }
-
-        .file-name {
-            color: #e2e8f0;
-            font-weight: 500;
-        }
-
-        .file-entry:hover .file-name {
-            color: var(--text-main);
-            text-shadow: 0 0 6px rgba(0, 255, 102, 0.4);
-        }
-
-        .file-desc {
-            color: var(--text-muted);
-            margin-left: 10px;
-            font-size: 11px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .file-action-tag {
-            margin-left: auto;
-            font-size: 10px;
-            color: var(--text-secondary);
-            opacity: 0.65;
-            padding-left: 6px;
-        }
-
-        .file-entry:hover .file-action-tag {
-            opacity: 1;
-        }
-
-        /* Terminal Konsol Ekranı (Diagnostik Sonuçlar) */
-        .terminal-screen {
+        /* DİNAMİK LOG / ÇIKTI KUTUSU */
+        .term-output {
             display: none;
-            background: var(--code-bg);
-            border: 1px solid var(--border-active);
-            border-radius: 3px;
-            padding: 10px 14px;
-            margin: 6px 0 10px 0;
-            color: var(--text-main);
+            background: #020408;
+            border: 1px solid var(--neon-green);
+            padding: 10px;
             font-size: 11px;
-            line-height: 1.5;
+            color: var(--neon-green);
+            margin-top: 8px;
             white-space: pre-wrap;
-            box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.9);
-            max-height: 220px;
-            overflow-y: auto;
-        }
-
-        /* Tek Tıkla Kopyalanabilir Snippet Kartları */
-        .snippet-card {
-            background: rgba(8, 14, 25, 0.9);
-            border: 1px solid rgba(56, 189, 248, 0.15);
-            border-left: 3px solid var(--text-secondary);
-            padding: 8px 12px;
-            margin: 6px 0;
-            border-radius: 2px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .snippet-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .snippet-title {
-            color: var(--text-secondary);
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .snippet-copy-btn {
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid rgba(56, 189, 248, 0.35);
-            color: var(--text-secondary);
-            font-family: inherit;
-            font-size: 10px;
-            padding: 2px 7px;
-            border-radius: 2px;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-
-        .snippet-copy-btn:hover {
-            background: var(--text-secondary);
-            color: #030712;
-            font-weight: bold;
-        }
-
-        .snippet-code {
-            color: #a7f3d0;
-            background: #02050b;
-            padding: 6px 8px;
-            border-radius: 2px;
-            font-size: 11px;
-            border: 1px solid rgba(0, 255, 102, 0.15);
-            overflow-x: auto;
-            user-select: all;
             line-height: 1.4;
         }
 
-        .hud-footer {
-            margin-top: auto;
-            padding-top: 14px;
+        /* KOMUT CHEATSHEET SATIRI */
+        .cheat-item {
+            background: rgba(2, 6, 12, 0.6);
+            border: 1px solid rgba(56, 189, 248, 0.1);
+            padding: 6px 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 11px;
-            color: var(--text-muted);
-            border-top: 1px solid var(--border-dim);
         }
-
-        .hud-footer a {
-            color: var(--text-secondary);
-            text-decoration: none;
+        .cheat-code { color: var(--neon-green); font-family: inherit; }
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--border-line);
+            color: var(--neon-cyan);
+            padding: 2px 6px;
+            font-size: 9px;
+            cursor: pointer;
+            font-family: inherit;
         }
-
-        .hud-footer a:hover {
-            text-decoration: underline;
-        }
+        .copy-btn:hover { border-color: var(--neon-green); color: var(--neon-green); }
     </style>
 </head>
 <body>
 
-<!-- Background Matrix Digital Rain -->
 <canvas id="matrix-canvas"></canvas>
 
-<!-- SECURE AUTHENTICATION SCREEN -->
-<div id="login-overlay">
-    <div class="login-box" id="login-box-card">
-        <div class="login-header">
-            <span>[ SECURE_AUTH // C2_NODE ]</span>
-            <span style="font-size: 10px; color: var(--text-secondary);">v5.2-PRO</span>
-        </div>
-        <div class="login-prompt">
-            Erişim yetkilendirmesi gereklidir. Sistem kimliği ve güvenlik tokenini doğrulayın:
-        </div>
-        
-        <form id="auth-form" onsubmit="event.preventDefault(); verifyCredentials();">
-            <div class="auth-field-group">
-                <label class="auth-field-label">
-                    OPERATOR IDENTIFIER
-                    <span>[by anka]</span>
-                </label>
-                <input type="text" id="auth-username" class="auth-input" placeholder="•••••" autocomplete="off" autofocus>
+<!-- GİRİŞ EKRANI -->
+<div id="auth-overlay">
+    <div class="auth-card">
+        <div class="auth-header">[ SECURE_AUTH // C2_NODE ]</div>
+        <form id="auth-form" onsubmit="handleAuth(event)">
+            <div class="auth-label">
+                <span>OPERATOR IDENTIFIER</span>
+                <span>[by anka]</span>
             </div>
+            <input type="text" id="auth-user" class="auth-input" placeholder="•••••" autocomplete="off">
 
-            <div class="auth-field-group">
-                <label class="auth-field-label">
-                    SECURITY TOKEN / PIN
-                    <span>[****]</span>
-                </label>
-                <input type="password" id="auth-token" class="auth-input" placeholder="••••">
+            <div class="auth-label">
+                <span>SECURITY TOKEN / PIN</span>
+                <span>[****]</span>
             </div>
+            <input type="password" id="auth-pass" class="auth-input" placeholder="••••" autocomplete="off">
 
-            <button type="submit" id="auth-submit-btn" class="auth-btn">DOĞRULA // INITIALIZE</button>
-            <div id="auth-error">!! [!] ACCESS DENIED: GEÇERSİZ KİMLİK VEYA TOKEN !!</div>
+            <button type="submit" class="auth-btn">Doğrula & Başlat</button>
+            <div id="auth-error">!! ERİŞİM REDDEDİLDİ: GEÇERSİZ KİMLİK/PIN !!</div>
         </form>
     </div>
 </div>
 
-<!-- MAIN APPLICATION CONSOLE -->
-<div class="main-layout">
+<!-- ANA KONSOL -->
+<div class="workspace">
     
-    <!-- TOP STATUS HUD -->
-    <header class="hud-header">
-        <div class="hud-title-zone">
-            <h1 class="hud-title">root@C2-Console:~# ./station_dispatch.sh</h1>
-            <span class="badge">[ONLINE]</span>
-            <span class="badge badge-cyan">SYS_TIER: SEC_OPS</span>
-        </div>
+    <!-- ÜST BİLGİ VE TELEMETRİ -->
+    <div class="telemetry-bar">
+        <div class="telemetry-item">NODE: <span>C2-OPERATOR</span></div>
+        <div class="telemetry-item">PUBLIC_IP: <span id="ip-display">Sorgulanıyor...</span></div>
+        <div class="telemetry-item">STATUS: <span>ONLINE // ACTIVE</span></div>
+        <button class="lock-btn" onclick="terminateSession()">[ TERMINATE_LOCK ]</button>
+    </div>
 
-        <div class="hud-stats-zone">
-            <div class="hud-stat-item">PUBLIC_IP: <span id="public-ip-badge">Sorgulanıyor...</span></div>
-            <div class="hud-stat-item">TIME: <span id="hud-clock">00:00:00 LOC</span></div>
-            <div class="hud-stat-item">OPERATOR: <span>ADEM_OZKARA [ANKA]</span></div>
-            <button class="hud-lock-btn" type="button" onclick="terminateSession()">[ TERMINATE_LOCK ]</button>
-        </div>
-    </header>
-
-    <!-- INTERACTIVE COMMAND BAR -->
+    <!-- KOMUT SATIRI VE ANLIK FİLTRELEME -->
     <div class="cmd-bar">
-        <span class="cmd-prefix">$ grep -i / exec:</span>
-        <input type="text" id="console-cmd-input" class="cmd-input" 
-               placeholder="Öğe arayın veya komut yazın (örn: ping 1.1.1.1, dns google.com, cidr 24, clear)..."
-               oninput="handleGrepFilter()" onkeydown="handleCommandLine(event)">
-        <span class="cmd-helper-hint">ENTER: RUN CMD | ESC: CLEAR</span>
+        <span class="cmd-prompt">$ grep -i / exec:</span>
+        <input type="text" id="filter-box" class="cmd-input" placeholder="Filtrelemek için kelime yazın veya ping / speedtest komutlarını çalıştırın..." oninput="applyFilter()">
     </div>
 
-    <!-- 3-SÜTUNLU OPERASYONEL DÜZEN -->
-    <div class="operations-grid" id="operations-grid-root">
+    <!-- 3 SÜTUNLU HUD IZGARA -->
+    <div class="hud-grid">
+        
+        <!-- SÜTUN 1: RECON, DIAGNOSTICS & NETWORK -->
+        <div class="hud-col">
+            
+            <!-- Canlı Tanılama -->
+            <div class="module">
+                <div class="module-title"><span>system_diagnostics/</span><span>[DIAG]</span></div>
+                <div class="module-list">
+                    <button class="nav-link" onclick="runPingTest()"><b>sh_run_ping_test</b> <span>// Hedef IP/domain ICMP testi</span></button>
+                    <div id="ping-log" class="term-output"></div>
 
-        <!-- ================= SÜTUN 1: RECON & SYSTEM DIAGNOSTICS ================= -->
-        <div class="column-module">
-            <div class="column-header">
-                <span>01 // DIAGNOSTICS & RECON</span>
-                <span>[NET_ANALYZERS]</span>
-            </div>
-
-            <!-- 0. SYSTEM DIAGNOSTICS -->
-            <div class="folder-item active" data-folder="system_diagnostics">
-                <div class="folder-header" onclick="toggleFolder(this)">
-                    <div class="folder-title-left">
-                        <span class="folder-arrow">▸</span>
-                        <span>system_diagnostics/</span>
-                    </div>
-                    <span class="folder-meta-count">4 test scripts</span>
-                </div>
-                <div class="folder-body">
-                    <div class="file-list">
-                        <button class="file-entry" type="button" onclick="triggerPingAction()">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">sh_run_ping_test.sh</span>
-                            <span class="file-desc">// Özel Hedef IP/Domain ICMP testi</span>
-                            <span class="file-action-tag">[EXECUTE]</span>
-                        </button>
-                        <div id="ping-console-output" class="terminal-screen"></div>
-
-                        <button class="file-entry" type="button" onclick="triggerSpeedTestAction()">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">sh_run_speed_test.sh</span>
-                            <span class="file-desc">// Bant genişliği indirme ve yükleme akış ölçümü</span>
-                            <span class="file-action-tag">[EXECUTE]</span>
-                        </button>
-                        <div id="speed-console-output" class="terminal-screen"></div>
-
-                        <button class="file-entry" type="button" onclick="triggerDnsLookupAction()">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">sh_run_dns_lookup.sh</span>
-                            <span class="file-desc">// Hedef alan adı A, MX, NS sorgusu</span>
-                            <span class="file-action-tag">[EXECUTE]</span>
-                        </button>
-                        <div id="dns-console-output" class="terminal-screen"></div>
-
-                        <button class="file-entry" type="button" onclick="triggerCidrCalcAction()">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">sh_run_cidr_calc.sh</span>
-                            <span class="file-desc">// IP Subnet & Host hesaplayıcı</span>
-                            <span class="file-action-tag">[EXECUTE]</span>
-                        </button>
-                        <div id="cidr-console-output" class="terminal-screen"></div>
-                    </div>
+                    <button class="nav-link" onclick="runSpeedTest()"><b>sh_run_speed_test</b> <span>// Ağ bant genişliği testi</span></button>
+                    <div id="speed-log" class="term-output"></div>
                 </div>
             </div>
 
-            <!-- 1. DNS, NETWORK & TRAFFIC OPS -->
-            <div class="folder-item" data-folder="dns_network_ops">
-                <div class="folder-header" onclick="toggleFolder(this)">
-                    <div class="folder-title-left">
-                        <span class="folder-arrow">▸</span>
-                        <span>dns_network_ops/</span>
-                    </div>
-                    <span class="folder-meta-count">8 analyzers</span>
-                </div>
-                <div class="folder-body">
-                    <div class="file-list">
-                        <a href="https://www.wireshark.org/download.html" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Wireshark</span>
-                            <span class="file-desc">// Paket çözümleme ve protokol analizi</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://nmap.org/download.html" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Nmap_Zenmap</span>
-                            <span class="file-desc">// Ağ topolojisi ve güvenlik port tarayıcısı</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://mxtoolbox.com/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">MXToolbox_DNS_Lookup</span>
-                            <span class="file-desc">// MX, SPF, DKIM, DMARC ve Blacklist</span>
-                            <span class="file-action-tag">[WEB_APP]</span>
-                        </a>
-                        <a href="https://bgp.he.net/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Hurricane_Electric_BGP</span>
-                            <span class="file-desc">// Otonom sistem (ASN) ve IP Prefix rotaları</span>
-                            <span class="file-action-tag">[WEB_APP]</span>
-                        </a>
-                        <a href="https://www.advanced-ip-scanner.com/tr/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Advanced_IP_Scanner</span>
-                            <span class="file-desc">// Hızlı LAN cihaz ve MAC tarayıcı</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://angryip.org/download/#windows" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Angry_IP_Scanner</span>
-                            <span class="file-desc">// Hızlı cross-platform IP aralık tarayıcısı</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://www.nirsoft.net/utils/multiple_ping_tool.html" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">PingInfoView</span>
-                            <span class="file-desc">// Yüzlerce IP'yi anlık pingleyen monitör</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://www.wireguard.com/install/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">WireGuard_Client</span>
-                            <span class="file-desc">// Yüksek performanslı şifreli VPN tüneli</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                    </div>
+            <!-- DNS & Ağ Operasyonları -->
+            <div class="module">
+                <div class="module-title"><span>dns_network_ops/</span><span>[NET]</span></div>
+                <div class="module-list">
+                    <a href="https://mxtoolbox.com/SuperTool.aspx" target="_blank" class="nav-link"><b>MXToolbox SuperTool</b> <span>// DNS/MX/SPF analiz</span></a>
+                    <a href="https://bgp.he.net/" target="_blank" class="nav-link"><b>Hurricane Electric BGP</b> <span>// IP & ASN routing haritası</span></a>
+                    <a href="https://www.wireguard.com/install/" target="_blank" class="nav-link"><b>WireGuard VPN</b> <span>// Hızlı şifreli tünelleme</span></a>
+                    <a href="https://www.wireshark.org/download.html" target="_blank" class="nav-link"><b>Wireshark</b> <span>// Paket analiz motoru</span></a>
+                    <a href="https://nmap.org/download.html" target="_blank" class="nav-link"><b>Nmap / Zenmap</b> <span>// Ağ keşif ve port tarama</span></a>
+                    <a href="https://www.advanced-ip-scanner.com/tr/" target="_blank" class="nav-link"><b>Advanced IP Scanner</b> <span>// LAN tarama aracı</span></a>
                 </div>
             </div>
 
-            <!-- 2. INDUSTRIAL FIRMWARE -->
-            <div class="folder-item" data-folder="industrial_firmware">
-                <div class="folder-header" onclick="toggleFolder(this)">
-                    <div class="folder-title-left">
-                        <span class="folder-arrow">▸</span>
-                        <span>industrial_firmware/</span>
-                    </div>
-                    <span class="folder-meta-count">1 config repo</span>
-                </div>
-                <div class="folder-body">
-                    <div class="file-list">
-                        <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Teltonika_Router_Configs</span>
-                            <span class="file-desc">// Endüstriyel 4G Gateway ve APN arşivi</span>
-                            <span class="file-action-tag">[ARCHIVE]</span>
-                        </a>
-                    </div>
+            <!-- Ağ Donanımı & Router -->
+            <div class="module">
+                <div class="module-title"><span>industrial_firmware/</span><span>[IOT]</span></div>
+                <div class="module-list">
+                    <a href="https://github.com/" target="_blank" class="nav-link"><b>Router_Configs</b> <span>// Endüstriyel APN & modem arşivi</span></a>
                 </div>
             </div>
+
         </div>
 
-        <!-- ================= SÜTUN 2: IDENTITY, AD LABS & CHEATSHEETS ================= -->
-        <div class="column-module">
-            <div class="column-header">
-                <span>02 // IDENTITY & SYSADMIN</span>
-                <span>[AD_&_CHEATSHEETS]</span>
-            </div>
-
-            <!-- 3. LEARNING CHEATSHEETS -->
-            <div class="folder-item active" data-folder="learning_cheatsheets">
-                <div class="folder-header" onclick="toggleFolder(this)">
-                    <div class="folder-title-left">
-                        <span class="folder-arrow">▸</span>
-                        <span>learning_cheatsheets/</span>
+        <!-- SÜTUN 2: ACTIVE DIRECTORY, SYSADMIN & LEARNING -->
+        <div class="hud-col">
+            
+            <!-- Hızlı Referans / Öğrenim Komutları -->
+            <div class="module">
+                <div class="module-title"><span>learning_cheatsheets/</span><span>[QUICK_REF]</span></div>
+                <div class="module-list">
+                    <div class="cheat-item">
+                        <span class="cheat-code">Get-ADUser -Filter *</span>
+                        <button class="copy-btn" onclick="copySnippet('Get-ADUser -Filter *', this)">KOPYALA</button>
                     </div>
-                    <span class="folder-meta-count">SysAdmin & AD Snippets</span>
-                </div>
-                <div class="folder-body">
-                    <div class="file-list">
-                        <div class="snippet-card">
-                            <div class="snippet-header">
-                                <span class="snippet-title">AD Kullanıcı & Grup Denetimi</span>
-                                <button class="snippet-copy-btn" type="button" onclick="copySnippet(this, 'net user /domain\nnet group \'Domain Admins\' /domain\nGet-ADUser -Filter * -Properties DisplayName,EmailAddress | Select Name,SamAccountName')">Kopyala</button>
-                            </div>
-                            <div class="snippet-code">net user /domain &amp;&amp; net group "Domain Admins" /domain<br>Get-ADUser -Filter * | Select Name,SamAccountName</div>
-                        </div>
-
-                        <div class="snippet-card">
-                            <div class="snippet-header">
-                                <span class="snippet-title">Domain Controller & FSMO Rol Keşfi</span>
-                                <button class="snippet-copy-btn" type="button" onclick="copySnippet(this, 'nltest /dclist:domain.local\nnetdom query fsmo\ngpupdate /force /boot')">Kopyala</button>
-                            </div>
-                            <div class="snippet-code">nltest /dclist:domain.local &amp;&amp; netdom query fsmo &amp;&amp; gpupdate /force</div>
-                        </div>
-
-                        <div class="snippet-card">
-                            <div class="snippet-header">
-                                <span class="snippet-title">Ağ Sorun Giderme & DNS Temizleme</span>
-                                <button class="snippet-copy-btn" type="button" onclick="copySnippet(this, 'ipconfig /flushdns &amp;&amp; ipconfig /registerdns\nnetstat -ano | findstr LISTENING\ntracert -d 8.8.8.8')">Kopyala</button>
-                            </div>
-                            <div class="snippet-code">ipconfig /flushdns &amp;&amp; ipconfig /registerdns &amp;&amp; netstat -ano | findstr LISTENING</div>
-                        </div>
-
-                        <div class="snippet-card">
-                            <div class="snippet-header">
-                                <span class="snippet-title">Windows Güvenlik & Dosya Bütünlüğü</span>
-                                <button class="snippet-copy-btn" type="button" onclick="copySnippet(this, 'sfc /scannow\nDISM /Online /Cleanup-Image /RestoreHealth\nchkdsk C: /f /r')">Kopyala</button>
-                            </div>
-                            <div class="snippet-code">sfc /scannow &amp;&amp; DISM /Online /Cleanup-Image /RestoreHealth</div>
-                        </div>
+                    <div class="cheat-item">
+                        <span class="cheat-code">nltest /dclist:domain</span>
+                        <button class="copy-btn" onclick="copySnippet('nltest /dclist:domain', this)">KOPYALA</button>
+                    </div>
+                    <div class="cheat-item">
+                        <span class="cheat-code">netdom query fsmo</span>
+                        <button class="copy-btn" onclick="copySnippet('netdom query fsmo', this)">KOPYALA</button>
+                    </div>
+                    <div class="cheat-item">
+                        <span class="cheat-code">gpupdate /force</span>
+                        <button class="copy-btn" onclick="copySnippet('gpupdate /force', this)">KOPYALA</button>
+                    </div>
+                    <div class="cheat-item">
+                        <span class="cheat-code">netstat -ano | findstr LISTENING</span>
+                        <button class="copy-btn" onclick="copySnippet('netstat -ano | findstr LISTENING', this)">KOPYALA</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 4. ACTIVE DIRECTORY LABS -->
-            <div class="folder-item" data-folder="ad_domain_labs">
-                <div class="folder-header" onclick="toggleFolder(this)">
-                    <div class="folder-title-left">
-                        <span class="folder-arrow">▸</span>
-                        <span>ad_domain_labs/</span>
-                    </div>
-                    <span class="folder-meta-count">5 enterprise items</span>
-                </div>
-                <div class="folder-body">
-                    <div class="file-list">
-                        <a href="https://github.com/SpecterOps/BloodHound" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">BloodHound & SharpHound</span>
-                            <span class="file-desc">// Active Directory yetki yükseltme saldırı grafiği</span>
-                            <span class="file-action-tag">[REPO]</span>
-                        </a>
-                        <a href="https://learn.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Sysinternals_Suite</span>
-                            <span class="file-desc">// Process Explorer, Procmon, Autoruns, TCPView</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://learn.microsoft.com/en-us/troubleshoot/windows-server/system-management-components/remote-server-administration-tools" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">RSAT_Tools</span>
-                            <span class="file-desc">// AD DS, DNS, DHCP ve GPO istemci yönetim araçları</span>
-                            <span class="file-action-tag">[DOCS]</span>
-                        </a>
-                        <a href="https://github.com/gentilkiwi/mimikatz" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Mimikatz</span>
-                            <span class="file-desc">// LSASS bellek analizi ve Kerberos Pass-the-Ticket</span>
-                            <span class="file-action-tag">[REPO]</span>
-                        </a>
-                        <a href="https://learn.microsoft.com/en-us/windows-server/identity/laps/laps-overview" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Microsoft_LAPS</span>
-                            <span class="file-desc">// Yerel Yönetici Parolası Çözümü (LAPS)</span>
-                            <span class="file-action-tag">[PORTAL]</span>
-                        </a>
-                    </div>
+            <!-- Active Directory & Domain Laboratuvarı -->
+            <div class="module">
+                <div class="module-title"><span>ad_domain_labs/</span><span>[AD_SEC]</span></div>
+                <div class="module-list">
+                    <a href="https://github.com/BloodHoundAD/BloodHound" target="_blank" class="nav-link"><b>BloodHound & SharpHound</b> <span>// AD yetki yolu analizi</span></a>
+                    <a href="https://learn.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite" target="_blank" class="nav-link"><b>Sysinternals Suite</b> <span>// Windows iç yapı ve süreç teşhisi</span></a>
+                    <a href="https://learn.microsoft.com/en-us/troubleshoot/windows-server/system-management-components/remote-server-administration-tools" target="_blank" class="nav-link"><b>RSAT Tools</b> <span>// Uzak sunucu yönetim konsolları</span></a>
+                    <a href="https://github.com/gentilkiwi/mimikatz" target="_blank" class="nav-link"><b>Mimikatz</b> <span>// Kimlik ve bilet analizi</span></a>
+                    <a href="https://learn.microsoft.com/en-us/windows-server/identity/laps/laps-overview" target="_blank" class="nav-link"><b>Microsoft LAPS</b> <span>// Yerel yönetici şifre çözümü</span></a>
                 </div>
             </div>
 
-            <!-- 5. DATABASE ENGINES -->
-            <div class="folder-item" data-folder="database_engines">
-                <div class="folder-header" onclick="toggleFolder(this)">
-                    <div class="folder-title-left">
-                        <span class="folder-arrow">▸</span>
-                        <span>database_engines/</span>
-                    </div>
-                    <span class="folder-meta-count">2 RDBMS packages</span>
-                </div>
-                <div class="folder-body">
-                    <div class="file-list">
-                        <a href="https://www.microsoft.com/en-us/sql-server/sql-server-downloads" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">MS_SQL_Server_Express</span>
-                            <span class="file-desc">// Kurumsal ilişkisel veri tabanı motoru & SSMS</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://dev.mysql.com/downloads/installer/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">MySQL_Community_Server</span>
-                            <span class="file-desc">// RDBMS sunucusu ve Workbench aracı</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                    </div>
+            <!-- Veritabanı Sistemleri -->
+            <div class="module">
+                <div class="module-title"><span>database_engines/</span><span>[DATA]</span></div>
+                <div class="module-list">
+                    <a href="https://www.microsoft.com/en-us/sql-server/sql-server-downloads" target="_blank" class="nav-link"><b>MS SQL Server</b> <span>// Kurumsal veritabanı motoru</span></a>
+                    <a href="https://dev.mysql.com/downloads/installer/" target="_blank" class="nav-link"><b>MySQL Installer</b> <span>// Açık kaynak RDBMS</span></a>
                 </div>
             </div>
+
         </div>
 
-        <!-- ================= SÜTUN 3: OFFENSIVE, OS & REMOTES ================= -->
-        <div class="column-module">
-            <div class="column-header">
-                <span>03 // OFFENSIVE & INFRASTRUCTURE</span>
-                <span>[PENTEST_&_SYSTEMS]</span>
-            </div>
-
-            <!-- 6. VULNERABILITY & EXPLOITATION -->
-            <div class="folder-item" data-folder="vulnerability_labs">
-                <div class="folder-header" onclick="toggleFolder(this)">
-                    <div class="folder-title-left">
-                        <span class="folder-arrow">▸</span>
-                        <span>vulnerability_labs/</span>
-                    </div>
-                    <span class="folder-meta-count">4 pentest suites</span>
-                </div>
-                <div class="folder-body">
-                    <div class="file-list">
-                        <a href="https://portswigger.net/burp/communitydownload" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Burp_Suite_CE</span>
-                            <span class="file-desc">// Web uygulama sızma testleri & Repeater</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://github.com/rapid7/metasploit-framework/wiki/Nightly-Installers" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Metasploit_Framework</span>
-                            <span class="file-desc">// Zafiyet sömürü ve payload geliştirme konsolu</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://sourceforge.net/projects/metasploitable/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Metasploitable_Linux</span>
-                            <span class="file-desc">// Zafiyetli tasarlanmış test makinesi imajı</span>
-                            <span class="file-action-tag">[IMAGE]</span>
-                        </a>
-                        <a href="https://github.com/digininja/DVWA" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">DVWA_App</span>
-                            <span class="file-desc">// SQLi, XSS ve CSRF denemeleri için web lab</span>
-                            <span class="file-action-tag">[REPO]</span>
-                        </a>
-                    </div>
+        <!-- SÜTUN 3: OFFENSIVE, SYSTEMS & WORKSTATION -->
+        <div class="hud-col">
+            
+            <!-- Zafiyet & Test Ortamları -->
+            <div class="module">
+                <div class="module-title"><span>vulnerability_labs/</span><span>[EXPLOIT]</span></div>
+                <div class="module-list">
+                    <a href="https://portswigger.net/burp/communitydownload" target="_blank" class="nav-link"><b>Burp Suite CE</b> <span>// Web trafik ve güvenlik testi</span></a>
+                    <a href="https://github.com/rapid7/metasploit-framework/wiki/Nightly-Installers" target="_blank" class="nav-link"><b>Metasploit</b> <span>// Exploit framework</span></a>
+                    <a href="https://sourceforge.net/projects/metasploitable/" target="_blank" class="nav-link"><b>Metasploitable</b> <span>// Zafiyetli test laboratuvarı</span></a>
+                    <a href="https://github.com/digininja/DVWA" target="_blank" class="nav-link"><b>DVWA</b> <span>// Web güvenlik laboratuvarı</span></a>
+                    <a href="https://gchq.github.io/CyberChef/" target="_blank" class="nav-link"><b>CyberChef</b> <span>// Kripto & veri dönüştürücü</span></a>
                 </div>
             </div>
 
-            <!-- 7. OPERATING SYSTEMS & HYPERVISORS -->
-            <div class="folder-item" data-folder="operating_systems">
-                <div class="folder-header" onclick="toggleFolder(this)">
-                    <div class="folder-title-left">
-                        <span class="folder-arrow">▸</span>
-                        <span>operating_systems/</span>
-                    </div>
-                    <span class="folder-meta-count">6 hypervisor & ISOs</span>
-                </div>
-                <div class="folder-body">
-                    <div class="file-list">
-                        <a href="https://docs.google.com/uc?export=download&id=1bbRk2Lt4OFr1NksBb-5wA1gaBDs7rpVd" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">VMware_Workstation_Pro</span>
-                            <span class="file-desc">// Güvenli Drive deposundan direkt kurulum paketi</span>
-                            <span class="file-action-tag">[DIRECT_DL]</span>
-                        </a>
-                        <a href="https://www.kali.org/get-kali/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Kali_Linux_ISO</span>
-                            <span class="file-desc">// Siber güvenlik, adli bilişim ve pentest OS</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Windows_Server_2022_ISO</span>
-                            <span class="file-desc">// Active Directory Domain Services (AD DS) resmi ISO</span>
-                            <span class="file-action-tag">[EVALUATION]</span>
-                        </a>
-                        <a href="https://www.pfsense.org/download/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">pfSense_Firewall_ISO</span>
-                            <span class="file-desc">// Açık kaynak kurumsal güvenlik duvarı imajı</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://www.microsoft.com/tr-tr/software-download/windows10ISO" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Windows_10_Client_ISO</span>
-                            <span class="file-desc">// Kurumsal etki alanı istemci test kurulumu</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://www.microsoft.com/tr-tr/software-download/windows11" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Windows_11_Enterprise_ISO</span>
-                            <span class="file-desc">// Güncel modern endpoint güvenlik ve analiz kalıbı</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                    </div>
+            <!-- İşletim Sistemleri & Sanallaştırma -->
+            <div class="module">
+                <div class="module-title"><span>operating_systems/</span><span>[INFRA]</span></div>
+                <div class="module-list">
+                    <a href="https://docs.google.com/uc?export=download&id=1bbRk2Lt4OFr1NksBb-5wA1gaBDs7rpVd" class="nav-link"><b>VMware Workstation</b> <span>// Hipervizör setup paketi</span></a>
+                    <a href="https://www.kali.org/get-kali/" target="_blank" class="nav-link"><b>Kali Linux</b> <span>// Pentest işletim sistemi</span></a>
+                    <a href="https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022" target="_blank" class="nav-link"><b>Windows Server ISO</b> <span>// Active Directory imajı</span></a>
+                    <a href="https://www.microsoft.com/tr-tr/software-download/windows10ISO" target="_blank" class="nav-link"><b>Windows 10 ISO</b> <span>// İstemci test imajı</span></a>
+                    <a href="https://www.pfsense.org/download/" target="_blank" class="nav-link"><b>pfSense Firewall</b> <span>// Sanal firewall ISO</span></a>
                 </div>
             </div>
 
-            <!-- 8. REMOTE MANAGEMENT -->
-            <div class="folder-item" data-folder="remote_management">
-                <div class="folder-header" onclick="toggleFolder(this)">
-                    <div class="folder-title-left">
-                        <span class="folder-arrow">▸</span>
-                        <span>remote_management/</span>
-                    </div>
-                    <span class="folder-meta-count">5 remote clients</span>
-                </div>
-                <div class="folder-body">
-                    <div class="file-list">
-                        <a href="https://www.putty.org/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">PuTTY</span>
-                            <span class="file-desc">// SSH, Telnet ve Seri konsol bağlantı istemcisi</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://mobaxterm.mobatek.net/download.html" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">MobaXterm_Home</span>
-                            <span class="file-desc">// X11 sunucusu, sekmeli SSH ve SFTP paneli</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://anydesk.com/tr/downloads/windows" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">AnyDesk</span>
-                            <span class="file-desc">// Düşük gecikmeli uzak masaüstü istemcisi</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://www.teamviewer.com/tr/download/windows/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">TeamViewer</span>
-                            <span class="file-desc">// IT destek ve uzaktan yardım yazılımı</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://www.teamviewer.com/tr/download/windows/#host" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">TeamViewer_Host</span>
-                            <span class="file-desc">// Sunucu ve test cihazları kesintisiz erişim</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 9. FORENSICS & UTILITIES -->
-            <div class="folder-item" data-folder="forensics_credentials">
-                <div class="folder-header" onclick="toggleFolder(this)">
-                    <div class="folder-title-left">
-                        <span class="folder-arrow">▸</span>
-                        <span>forensics_credentials/</span>
-                    </div>
-                    <span class="folder-meta-count">6 utility tools</span>
-                </div>
-                <div class="folder-body">
-                    <div class="file-list">
-                        <a href="https://gchq.github.io/CyberChef/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">CyberChef_GCHQ</span>
-                            <span class="file-desc">// Veri şifreleme/çözme, hash ve log analizi</span>
-                            <span class="file-action-tag">[WEB_APP]</span>
-                        </a>
-                        <a href="https://bitwarden.com/download/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Bitwarden</span>
-                            <span class="file-desc">// Sıfır bilgili açık kaynak parola kasası</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://rufus.ie/tr/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Rufus_USB_Creator</span>
-                            <span class="file-desc">// UEFI / GPT önyüklenebilir USB oluşturucu</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://crystalmark.info/en/software/crystaldiskinfo/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">CrystalDiskInfo</span>
-                            <span class="file-desc">// S.M.A.R.T. disk sağlığı teşhis takibi</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://www.cpuid.com/softwares/hwmonitor.html" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">HWMonitor</span>
-                            <span class="file-desc">// İşlemci, anakart ve voltaj sensörleri monitörü</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://www.revouninstaller.com/revo-uninstaller-free-download/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Revo_Uninstaller</span>
-                            <span class="file-desc">// Kayıt defteri kalıntılarını temizleyen kaldırıcı</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 10. DEPLOYMENT TOOLKITS -->
-            <div class="folder-item" data-folder="deployment_toolkits">
-                <div class="folder-header" onclick="toggleFolder(this)">
-                    <div class="folder-title-left">
-                        <span class="folder-arrow">▸</span>
-                        <span>deployment_toolkits/</span>
-                    </div>
-                    <span class="folder-meta-count">4 workstation tools</span>
-                </div>
-                <div class="folder-body">
-                    <div class="file-list">
-                        <a href="https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Visual_Studio_Code</span>
-                            <span class="file-desc">// PowerShell, Python & Shell IDE</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://www.win-rar.com/postdownload.html" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">WinRAR</span>
-                            <span class="file-desc">// Arşiv ve paketleme yöneticisi</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://www.libreoffice.org/download/download-libreoffice/" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">LibreOffice</span>
-                            <span class="file-desc">// IT dokümantasyon ve raporlama paketi</span>
-                            <span class="file-action-tag">[DOWNLOAD]</span>
-                        </a>
-                        <a href="https://drive.google.com/drive/folders/15J6Zr1fbSzyL5UvM99VxRNCnLtNYeow2?usp=drive_link" target="_blank" rel="noopener noreferrer" class="file-entry">
-                            <span class="file-bullet">▸</span>
-                            <span class="file-name">Secured_Cloud_Backup</span>
-                            <span class="file-desc">// Google Drive yetkili veri ve profil yedek havuzu</span>
-                            <span class="file-action-tag">[CLOUD]</span>
-                        </a>
-                    </div>
+            <!-- Uzak Bağlantı & Kurulum Araçları -->
+            <div class="module">
+                <div class="module-title"><span>remote_and_tools/</span><span>[REMOTE]</span></div>
+                <div class="module-list">
+                    <a href="https://www.putty.org/" target="_blank" class="nav-link"><b>PuTTY</b> <span>// SSH / Seri port istemcisi</span></a>
+                    <a href="https://mobaxterm.mobatek.net/download.html" target="_blank" class="nav-link"><b>MobaXterm</b> <span>// Gelişmiş X11 ve SSH terminali</span></a>
+                    <a href="https://anydesk.com/tr/downloads/windows" target="_blank" class="nav-link"><b>AnyDesk</b> <span>// Uzak masaüstü</span></a>
+                    <a href="https://rufus.ie/tr/" target="_blank" class="nav-link"><b>Rufus</b> <span>// Bootable USB hazırlayıcı</span></a>
+                    <a href="https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user" target="_blank" class="nav-link"><b>VS Code</b> <span>// Script geliştirme ortamı</span></a>
                 </div>
             </div>
 
         </div>
 
     </div>
-
-    <!-- HUD FOOTER -->
-    <footer class="hud-footer">
-        <div>SESSION: <span style="color: var(--text-main);">ESTABLISHED</span> | ACCESS_LEVEL: <span style="color: var(--text-secondary);">ROOT</span></div>
-        <div>STATION: <a href="https://ademozkara.github.io/" target="_blank" rel="noopener noreferrer">ademozkara.github.io</a> &copy; CYBER COMMAND</div>
-    </footer>
-
 </div>
 
 <script>
-    /* =========================================================
-       1. AUTHENTICATION ENGINE (STRICT & REACTIVE)
-       ========================================================= */
-    const AUTH_SESSION_KEY = "C2_STATION_AUTH_TOKEN_V3";
-    const VALID_USER = "admin";
-    const VALID_PASS = "4380";
-
-    function checkAuthenticationState() {
-        const overlay = document.getElementById("login-overlay");
-        const token = sessionStorage.getItem(AUTH_SESSION_KEY);
-
-        if (token === "VALIDATED_AUTHORIZED") {
-            overlay.style.display = "none";
-        } else {
-            overlay.style.display = "flex";
-            const userField = document.getElementById("auth-username");
-            if (userField) {
-                userField.focus();
-            }
+    // OTURUM YÖNETİMİ
+    function checkSession() {
+        if (sessionStorage.getItem('c2_auth') === 'verified') {
+            document.getElementById('auth-overlay').style.display = 'none';
         }
     }
+    checkSession();
 
-    function verifyCredentials() {
-        const userInputEl = document.getElementById("auth-username");
-        const passInputEl = document.getElementById("auth-token");
-        const errorEl = document.getElementById("auth-error");
-        const overlay = document.getElementById("login-overlay");
-        const cardBox = document.getElementById("login-box-card");
+    function handleAuth(e) {
+        e.preventDefault();
+        const user = document.getElementById('auth-user').value.trim().toLowerCase();
+        const pass = document.getElementById('auth-pass').value.trim();
+        const err = document.getElementById('auth-error');
 
-        const userVal = userInputEl ? userInputEl.value.trim().toLowerCase() : "";
-        const passVal = passInputEl ? passInputEl.value.trim() : "";
-
-        // Verification logic: user is 'admin', password is '4380'
-        if (userVal === VALID_USER && passVal === VALID_PASS) {
-            sessionStorage.setItem(AUTH_SESSION_KEY, "VALIDATED_AUTHORIZED");
-            if (errorEl) errorEl.style.display = "none";
-            
-            if (cardBox) cardBox.style.borderColor = "var(--text-secondary)";
-            overlay.style.opacity = "0";
-            setTimeout(() => {
-                overlay.style.display = "none";
-            }, 250);
+        if (user === 'admin' && pass === '4380') {
+            sessionStorage.setItem('c2_auth', 'verified');
+            document.getElementById('auth-overlay').style.display = 'none';
+            err.style.display = 'none';
         } else {
-            if (errorEl) {
-                errorEl.style.display = "block";
-            }
-            if (cardBox) {
-                cardBox.classList.remove("shake-anim");
-                void cardBox.offsetWidth; // Trigger reflow
-                cardBox.classList.add("shake-anim");
-            }
-            if (passInputEl) {
-                passInputEl.value = "";
-                passInputEl.focus();
-            }
+            err.style.display = 'block';
+            document.getElementById('auth-pass').value = '';
         }
     }
 
     function terminateSession() {
-        sessionStorage.removeItem(AUTH_SESSION_KEY);
-        const overlay = document.getElementById("login-overlay");
-        if (overlay) {
-            overlay.style.opacity = "1";
-            overlay.style.display = "flex";
-        }
-        const passInputEl = document.getElementById("auth-token");
-        const userInputEl = document.getElementById("auth-username");
-        if (passInputEl) passInputEl.value = "";
-        if (userInputEl) {
-            userInputEl.value = "";
-            userInputEl.focus();
-        }
+        sessionStorage.removeItem('c2_auth');
+        location.reload();
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-        checkAuthenticationState();
+    // IP SORGUSU
+    fetch('https://api.ipify.org?format=json')
+        .then(res => res.json())
+        .then(data => { document.getElementById('ip-display').innerText = data.ip; })
+        .catch(() => { document.getElementById('ip-display').innerText = '0.0.0.0 (Offline)'; });
 
-        const form = document.getElementById("auth-form");
-        if (form) {
-            form.addEventListener("submit", (e) => {
-                e.preventDefault();
-                verifyCredentials();
-            });
-        }
-
-        const submitBtn = document.getElementById("auth-submit-btn");
-        if (submitBtn) {
-            submitBtn.addEventListener("click", (e) => {
-                e.preventDefault();
-                verifyCredentials();
-            });
-        }
-
-        const passInput = document.getElementById("auth-token");
-        const userInput = document.getElementById("auth-username");
-
-        [passInput, userInput].forEach(input => {
-            if (input) {
-                input.addEventListener("keydown", (e) => {
-                    if (e.key === "Enter") {
-                        e.preventDefault();
-                        verifyCredentials();
-                    }
-                });
-            }
-        });
-
-        updateClock();
-        setInterval(updateClock, 1000);
-        fetchPublicIP();
-    });
-
-    /* =========================================================
-       2. HUD STATS: CLOCK & PUBLIC IP
-       ========================================================= */
-    function updateClock() {
-        const now = new Date();
-        const clockEl = document.getElementById("hud-clock");
-        if (clockEl) {
-            clockEl.innerText = now.toTimeString().split(' ')[0] + " LOC";
-        }
-    }
-
-    function fetchPublicIP() {
-        fetch('https://api.ipify.org?format=json')
-            .then(res => res.json())
-            .then(data => {
-                const el = document.getElementById('public-ip-badge');
-                if (el) el.innerText = data.ip;
-            })
-            .catch(() => {
-                const el = document.getElementById('public-ip-badge');
-                if (el) el.innerText = "127.0.0.1 (Offline)";
-            });
-    }
-
-    /* =========================================================
-       3. FOLDER TOGGLE & ACCORDION
-       ========================================================= */
-    function toggleFolder(headerElement) {
-        const folder = headerElement.parentElement;
-        folder.classList.toggle('active');
-    }
-
-    /* =========================================================
-       4. COMMAND EXECUTION & DYNAMIC MULTI-COLUMN FILTER
-       ========================================================= */
-    function handleGrepFilter() {
-        const inputVal = document.getElementById('console-cmd-input').value.toLowerCase().trim();
-        const folders = document.querySelectorAll('.folder-item');
-
-        folders.forEach(folder => {
-            const entries = folder.querySelectorAll('.file-entry, .snippet-card');
-            let hasMatch = false;
-
-            entries.forEach(entry => {
-                const text = entry.innerText.toLowerCase();
-                if (inputVal === "" || text.includes(inputVal)) {
-                    entry.style.display = entry.classList.contains('snippet-card') ? 'flex' : 'inline-flex';
-                    hasMatch = true;
-                } else {
-                    entry.style.display = 'none';
-                }
-            });
-
-            if (inputVal !== "") {
-                if (hasMatch) {
-                    folder.style.display = 'block';
-                    folder.classList.add('active');
-                } else {
-                    folder.style.display = 'none';
-                    folder.classList.remove('active');
-                }
-            } else {
-                folder.style.display = 'block';
-                if (folder.dataset.folder === "system_diagnostics" || folder.dataset.folder === "learning_cheatsheets") {
-                    folder.classList.add('active');
-                } else {
-                    folder.classList.remove('active');
-                }
-                entries.forEach(e => e.style.display = e.classList.contains('snippet-card') ? 'flex' : 'inline-flex');
-            }
-        });
-    }
-
-    function handleCommandLine(e) {
-        if (e.key === "Escape") {
-            document.getElementById('console-cmd-input').value = "";
-            handleGrepFilter();
-            return;
-        }
-
-        if (e.key === "Enter") {
-            const cmd = document.getElementById('console-cmd-input').value.trim();
-            if (!cmd) return;
-
-            const parts = cmd.split(" ");
-            const verb = parts[0].toLowerCase();
-            const target = parts[1];
-
-            if (verb === "ping") {
-                triggerPingAction(target || "8.8.8.8");
-            } else if (verb === "speed" || verb === "speedtest") {
-                triggerSpeedTestAction();
-            } else if (verb === "dns" || verb === "dig" || verb === "nslookup") {
-                triggerDnsLookupAction(target || "google.com");
-            } else if (verb === "cidr") {
-                triggerCidrCalcAction(target || "24");
-            } else if (verb === "clear") {
-                document.querySelectorAll('.terminal-screen').forEach(scr => scr.style.display = 'none');
-                document.getElementById('console-cmd-input').value = "";
-                handleGrepFilter();
-            }
-        }
-    }
-
-    /* =========================================================
-       5. INTERACTIVE DIAGNOSTIC ENGINES
-       ========================================================= */
-    function triggerPingAction(overrideTarget) {
-        const output = document.getElementById('ping-console-output');
-        let target = overrideTarget;
-
-        if (!target) {
-            target = prompt("Sorgulanacak Hedef IP / Domain girin:", "192.168.1.1");
-        }
-
-        if (!target || !target.trim()) return;
+    // PING TESTİ
+    function runPingTest() {
+        const out = document.getElementById('ping-log');
+        let target = prompt("Sorgulanacak Hedef IP / Domain:", "192.168.1.1");
+        if (!target) return;
         target = target.trim();
 
-        const parentFolder = output.closest('.folder-item');
-        if (parentFolder) parentFolder.classList.add('active');
-
-        output.style.display = 'block';
-        output.innerText = `$ ping -c 4 ${target}\nPING ${target} (${target}) 56(84) bytes of data.\n[ICMP PAKETLERİ GÖNDERİLİYOR...]`;
+        out.style.display = 'block';
+        out.innerText = `$ ping -c 4 ${target}\n[KONTROL EDİLİYOR - ICMP PAKETLERİ GÖNDERİLİYOR...]`;
 
         const start = performance.now();
         fetch('https://www.google.com/favicon.ico', { mode: 'no-cors', cache: 'no-store' })
             .then(() => {
-                const latency = Math.round(performance.now() - start);
-                let log = `$ ping -c 4 ${target}\n`;
-                log += `PING ${target} (${target}) 56(84) bytes of data.\n`;
-                log += `64 bytes from ${target}: icmp_seq=1 ttl=64 time=${latency} ms\n`;
-                log += `64 bytes from ${target}: icmp_seq=2 ttl=64 time=${latency + 1} ms\n`;
-                log += `64 bytes from ${target}: icmp_seq=3 ttl=64 time=${Math.max(1, latency - 2)} ms\n`;
-                log += `64 bytes from ${target}: icmp_seq=4 ttl=64 time=${latency + 2} ms\n\n`;
-                log += `--- ${target} ping statistics ---\n`;
-                log += `4 packets transmitted, 4 received, 0% packet loss, time 3004ms\n`;
-                log += `rtt min/avg/max = ${Math.max(1, latency - 2)}.0/${latency}.2/${latency + 2}.0 ms`;
-                output.innerText = log;
+                const diff = Math.round(performance.now() - start);
+                out.innerText = `$ ping -c 4 ${target}\n64 bytes from ${target}: time=${diff}ms\n64 bytes from ${target}: time=${diff + 1}ms\n--- ${target} ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, avg = ${diff}ms`;
             })
             .catch(() => {
-                setTimeout(() => {
-                    let log = `$ ping -c 4 ${target}\n`;
-                    log += `64 bytes from ${target}: icmp_seq=1 ttl=128 time=14 ms\n`;
-                    log += `64 bytes from ${target}: icmp_seq=2 ttl=128 time=12 ms\n`;
-                    log += `64 bytes from ${target}: icmp_seq=3 ttl=128 time=15 ms\n`;
-                    log += `64 bytes from ${target}: icmp_seq=4 ttl=128 time=13 ms\n`;
-                    log += `--- ${target} ping statistics: 4 packets transmitted, 4 received, 0% loss ---`;
-                    output.innerText = log;
-                }, 800);
+                out.innerText = `$ ping -c 4 ${target}\n64 bytes from ${target}: time=12ms\n--- ${target} ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, avg = 12ms (Offline Simulation)`;
             });
     }
 
-    function triggerSpeedTestAction() {
-        const output = document.getElementById('speed-console-output');
-        const parentFolder = output.closest('.folder-item');
-        if (parentFolder) parentFolder.classList.add('active');
+    // SPEEDTEST
+    function runSpeedTest() {
+        const out = document.getElementById('speed-log');
+        out.style.display = 'block';
+        out.innerText = "$ speedtest-cli --secure\n[İŞLEM BAŞLATILDI - TEST EDİLİYOR...]";
 
-        output.style.display = 'block';
-        output.innerText = "$ speedtest-cli --secure\nRetrieving server configuration...\nTesting infrastructure throughput...\n[PAKET AKIŞI ÖLÇÜLÜYOR...]";
+        setTimeout(() => {
+            out.innerText = `$ speedtest-cli --secure\n[✓] DOWNLOAD SPEED : 84.20 Mbps\n[✓] UPLOAD SPEED   : 26.50 Mbps\nExecution completed.`;
+        }, 1200);
+    }
 
-        const imageAddr = "https://upload.wikimedia.org/wikipedia/commons/3/3d/LARGE_elevation.jpg?r=" + Math.random();
-        const downloadSize = 5000000;
-        const startTime = new Date().getTime();
-
-        const img = new Image();
-        img.onload = function() {
-            const duration = (new Date().getTime() - startTime) / 1000;
-            const speedBps = (downloadSize * 8) / duration;
-            const speedMbps = ((speedBps / 1024) / 1024).toFixed(2);
-            const uploadMbps = (speedMbps * 0.38).toFixed(2);
-
-            let log = `$ speedtest-cli --secure\n`;
-            log += `ISP Node Selected: High-Speed Uplink Gateway\n`;
-            log += `Latency: 9.4 ms | Jitter: 1.1 ms\n\n`;
-            log += `[✓] DOWNLOAD: ${speedMbps} Mbps\n`;
-            log += `[✓] UPLOAD  : ${uploadMbps} Mbps\n\n`;
-            log += `Status: Completed without packet drop.`;
-            output.innerText = log;
-        };
-
-        img.onerror = function() {
+    // TEK TIKLA KOD KOPYALAMA
+    function copySnippet(text, btn) {
+        navigator.clipboard.writeText(text).then(() => {
+            const original = btn.innerText;
+            btn.innerText = "✓ ALINDI";
+            btn.style.color = "#00ff66";
             setTimeout(() => {
-                output.innerText = `$ speedtest-cli --secure\n[✓] DOWNLOAD: 84.50 Mbps\n[✓] UPLOAD  : 28.20 Mbps\nLatency: 12 ms (Simulated)`;
-            }, 1000);
-        };
-
-        img.src = imageAddr;
+                btn.innerText = original;
+                btn.style.color = "";
+            }, 1500);
+        });
     }
 
-    function triggerDnsLookupAction(overrideDomain) {
-        const output = document.getElementById('dns-console-output');
-        let domain = overrideDomain;
+    // GREP FİLTRELEME
+    function applyFilter() {
+        const q = document.getElementById('filter-box').value.toLowerCase().trim();
+        const modules = document.querySelectorAll('.module');
 
-        if (!domain) {
-            domain = prompt("DNS kaydı sorgulanacak domain:", "google.com");
-        }
+        modules.forEach(mod => {
+            const links = mod.querySelectorAll('.nav-link, .cheat-item');
+            let hasMatch = false;
 
-        if (!domain || !domain.trim()) return;
-        domain = domain.trim().toLowerCase();
+            links.forEach(el => {
+                const text = el.innerText.toLowerCase();
+                if (text.includes(q)) {
+                    el.style.display = el.classList.contains('cheat-item') ? 'flex' : 'inline-flex';
+                    hasMatch = true;
+                } else {
+                    el.style.display = 'none';
+                }
+            });
 
-        const parentFolder = output.closest('.folder-item');
-        if (parentFolder) parentFolder.classList.add('active');
-
-        output.style.display = 'block';
-        output.innerText = `$ dig +noall +answer ${domain} ANY\n; Querying authoritative root servers...\n[KAYITLAR ÇÖZÜLÜYOR...]`;
-
-        setTimeout(() => {
-            let log = `$ dig +noall +answer ${domain} ANY\n\n`;
-            log += `${domain}.\t\t300\tIN\tA\t142.250.187.174\n`;
-            log += `${domain}.\t\t300\tIN\tAAAA\t2a00:1450:4001:831::200e\n`;
-            log += `${domain}.\t\t3600\tIN\tMX\t10 smtp.${domain}.\n`;
-            log += `${domain}.\t\t86400\tIN\tNS\tns1.${domain}.\n`;
-            log += `${domain}.\t\t300\tIN\tTXT\t"v=spf1 include:_spf.${domain} ~all"\n\n`;
-            log += `;; Query time: 18 msec\n;; SERVER: 8.8.8.8#53(8.8.8.8)\n;; MSG SIZE rcvd: 284`;
-            output.innerText = log;
-        }, 900);
+            mod.style.display = (q === '' || hasMatch) ? 'block' : 'none';
+        });
     }
 
-    function triggerCidrCalcAction(overrideCidr) {
-        const output = document.getElementById('cidr-console-output');
-        let cidr = overrideCidr;
-
-        if (!cidr) {
-            cidr = prompt("CIDR Prefix girin (örn: 24, 16, 28):", "24");
-        }
-
-        if (!cidr || !cidr.trim()) return;
-        cidr = parseInt(cidr.replace('/', '').trim());
-
-        const parentFolder = output.closest('.folder-item');
-        if (parentFolder) parentFolder.classList.add('active');
-
-        output.style.display = 'block';
-
-        if (isNaN(cidr) || cidr < 1 || cidr > 32) {
-            output.innerText = "Hata: Geçerli bir CIDR prefix (1 - 32) girilmedi.";
-            return;
-        }
-
-        const totalHosts = Math.pow(2, 32 - cidr);
-        const usableHosts = cidr >= 31 ? (cidr === 31 ? 2 : 1) : totalHosts - 2;
-
-        let mask = [];
-        for (let i = 0; i < 4; i++) {
-            const n = Math.min(cidr, 8);
-            mask.push(256 - Math.pow(2, 8 - n));
-            cidr -= n;
-        }
-
-        let log = `$ ipcalc /${overrideCidr || 24}\n\n`;
-        log += `Subnet Mask     : ${mask.join('.')}\n`;
-        log += `Total Addresses : ${totalHosts.toLocaleString()}\n`;
-        log += `Usable Hosts    : ${usableHosts.toLocaleString()}\n`;
-        log += `Wildcard Mask   : ${mask.map(b => 255 - b).join('.')}\n`;
-        log += `Class Type      : Standard Classless Inter-Domain Routing`;
-        output.innerText = log;
-    }
-
-    /* =========================================================
-       6. COPY CODE SNIPPET HELPER
-       ========================================================= */
-    function copySnippet(button, codeText) {
-        const temp = document.createElement('textarea');
-        temp.value = codeText;
-        document.body.appendChild(temp);
-        temp.select();
-        document.execCommand('copy');
-        document.body.removeChild(temp);
-
-        const oldText = button.innerText;
-        button.innerText = "✓ Kopyalandı";
-        button.style.color = "var(--text-main)";
-        setTimeout(() => {
-            button.innerText = oldText;
-            button.style.color = "var(--text-secondary)";
-        }, 1500);
-    }
-
-    /* =========================================================
-       7. LOW-STRAIN DIGITAL MATRIX RAIN
-       ========================================================= */
+    // MATRIX ARKA PLAN
     const canvas = document.getElementById('matrix-canvas');
     const ctx = canvas.getContext('2d');
 
-    function resizeCanvas() {
+    function resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    resize();
+    window.addEventListener('resize', resize);
 
     const chars = ['0', '1'];
-    const fontSize = 13;
-    let cols = Math.floor(canvas.width / fontSize);
+    const fontSize = 14;
+    let cols = canvas.width / fontSize;
+    const drops = Array.from({ length: cols }, () => Math.random() * -100);
 
-    let drops = [];
-    for (let i = 0; i < cols; i++) {
-        drops[i] = Math.random() * -80;
-    }
-
-    function renderMatrix() {
-        ctx.fillStyle = 'rgba(3, 7, 18, 0.08)';
+    function draw() {
+        ctx.fillStyle = 'rgba(3, 6, 10, 0.08)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.font = fontSize + 'px monospace';
 
         for (let i = 0; i < drops.length; i++) {
-            const text = chars[Math.floor(Math.random() * chars.length)];
-            const x = i * fontSize;
-            const y = drops[i] * fontSize;
+            ctx.fillStyle = (Math.random() > 0.99) ? 'rgba(56, 189, 248, 0.2)' : 'rgba(0, 255, 102, 0.12)';
+            const char = chars[Math.floor(Math.random() * chars.length)];
+            ctx.fillText(char, i * fontSize, drops[i] * fontSize);
 
-            if (Math.random() > 0.985) {
-                ctx.fillStyle = 'rgba(56, 189, 248, 0.2)';
-            } else {
-                ctx.fillStyle = 'rgba(0, 255, 102, 0.12)';
-            }
-
-            ctx.fillText(text, x, y);
-
-            if (y > canvas.height && Math.random() > 0.988) {
-                drops[i] = 0;
-            }
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.985) drops[i] = 0;
             drops[i]++;
         }
     }
-
-    setInterval(renderMatrix, 55);
+    setInterval(draw, 50);
 </script>
 
 </body>
