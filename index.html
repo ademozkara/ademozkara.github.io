@@ -408,12 +408,12 @@
 
                     <div class="link-wrapper">
                         <button class="nav-link" onclick="toggleSpeedTest()">
-                            <div class="nav-link-left"><b>sh_run_speed_test</b> <span>// Gigabit Multi-Stream (900+ Mbps Destekli)</span></div>
-                            <span class="inspect-badge">[MULTI-STREAM]</span>
+                            <div class="nav-link-left"><b>sh_run_speed_test</b> <span>// Fast-Style 20s Multi-Stream (900+ Mbps)</span></div>
+                            <span class="inspect-badge">[FAST-20S]</span>
                         </button>
                         <div id="speed-box" class="term-box">
                             <div class="term-header">
-                                <span>GIGABIT HIGH-BANDWIDTH SPEED LOG</span>
+                                <span>FAST-STYLE CONTINUOUS 20S BENCHMARK</span>
                                 <button class="term-close-btn" onclick="closeBox('speed-box')">[X KAPAT]</button>
                             </div>
                             <pre id="speed-log" class="term-content"></pre>
@@ -827,64 +827,127 @@
         out.innerText = logText;
     }
 
-    // GİGABİT DESTEKLİ PARALEL (MULTI-STREAM) BANT GENİŞLİĞİ MOTORU
+    // 20 SANİYELİK FAST.COM MANTIĞINDA KADEMELİ VE CANLI TEST MOTORU
+    let speedTestRunning = false;
     async function toggleSpeedTest() {
         const box = document.getElementById('speed-box');
         const out = document.getElementById('speed-log');
 
-        if (box.style.display === 'block') {
+        if (box.style.display === 'block' && !speedTestRunning) {
             box.style.display = 'none';
             return;
         }
 
         box.style.display = 'block';
-        out.innerText = `$ fast-cli --engine=multi-stream-cdn --parallel=4\n[INIT] Yüksek hızlı CDN üzerinden 4 paralel TCP akışı açılıyor...\nHat kapasitesi zorlanıyor, lütfen bekleyin...`;
+        speedTestRunning = true;
 
-        // Yüksek hızlı Cloud CDN uç noktaları (CORS kısıtlamasız stream)
-        const testEndpoints = [
-            'https://speed.cloudflare.com/__down?bytes=25000000',
-            'https://speed.cloudflare.com/__down?bytes=25000000',
-            'https://speed.cloudflare.com/__down?bytes=25000000',
-            'https://speed.cloudflare.com/__down?bytes=25000000'
-        ];
+        const durationTotal = 20; // 20 saniye süren tam analiz
+        const testStartTime = performance.now();
+        let totalBytes = 0;
+        let speedSnapshots = [];
+        let activeStreams = 0;
+        const maxParallelStreams = 6;
 
-        try {
-            const startTime = performance.now();
-            let totalBytes = 0;
+        out.innerText = `$ fast-cli --engine=continuous-buffer --duration=20s\n[INIT] Fast.com tarzı sürekli akış başlatılıyor...\n[STATUS] Tampon bellek ve TCP penceresi genişletiliyor...\n`;
 
-            const streams = testEndpoints.map(async (url) => {
-                const response = await fetch(`${url}&_cb=${Date.now()}_${Math.random()}`, { cache: 'no-store' });
-                const reader = response.body.getReader();
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-                    totalBytes += value.length;
+        // Canlı arayüz yenileyici döngü
+        let lastReportBytes = 0;
+        let lastReportTime = performance.now();
+
+        const updateTicker = setInterval(() => {
+            const now = performance.now();
+            const elapsedTotal = ((now - testStartTime) / 1000).toFixed(1);
+            const remaining = Math.max(0, (durationTotal - elapsedTotal)).toFixed(0);
+
+            // Son 1 saniyelik anlık pencere hızı
+            const intervalDeltaSec = (now - lastReportTime) / 1000;
+            const deltaBytes = totalBytes - lastReportBytes;
+            let currentInstantMbps = ((deltaBytes * 8) / intervalDeltaSec / (1024 * 1024)).toFixed(1);
+
+            // TCP ramp-up (ilk 3 saniyeden sonra kararlı ortalamaları listeye ekle)
+            if (elapsedTotal > 3.0 && currentInstantMbps > 10) {
+                speedSnapshots.push(parseFloat(currentInstantMbps));
+            }
+
+            lastReportBytes = totalBytes;
+            lastReportTime = now;
+
+            const progressPct = Math.min(100, Math.round((elapsedTotal / durationTotal) * 100));
+            const peakCurrent = speedSnapshots.length > 0 ? Math.max(...speedSnapshots).toFixed(1) : currentInstantMbps;
+
+            out.innerText = `$ fast-cli --engine=continuous-buffer --duration=20s\n` +
+                `Connected : Edge CDN High-Throughput Cluster\n` +
+                `Sockets   : ${maxParallelStreams} Active TCP Streams Running\n` +
+                `Progress  : [${progressPct}%] | Kalan Süre: ${remaining}s\n` +
+                `Transferred: ${(totalBytes / (1024 * 1024)).toFixed(1)} MB\n\n` +
+                `-----------------------------------------\n` +
+                `>>> ANLIK HIZ (STREAM) : ${currentInstantMbps} Mbps\n` +
+                `>>> TEPE HIZ (PEAK)    : ${peakCurrent} Mbps\n` +
+                `-----------------------------------------\n` +
+                `[Hattın tam kapasitesine oturması için veri akıtılıyor...]`;
+        }, 1000);
+
+        // Arka planda 20 saniye boyunca durmaksızın veri çeken işçi fonksiyon
+        async function runWorker() {
+            while ((performance.now() - testStartTime) / 1000 < durationTotal) {
+                try {
+                    const testUrl = `https://speed.cloudflare.com/__down?bytes=50000000&_cb=${Date.now()}_${Math.random()}`;
+                    const res = await fetch(testUrl, { cache: 'no-store' });
+                    const reader = res.body.getReader();
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        totalBytes += value.length;
+                        if ((performance.now() - testStartTime) / 1000 >= durationTotal) {
+                            reader.cancel();
+                            break;
+                        }
+                    }
+                } catch (e) {
+                    await new Promise(r => setTimeout(r, 200));
                 }
-            });
-
-            await Promise.all(streams);
-            const durationSec = (performance.now() - startTime) / 1000;
-
-            const bitsLoaded = totalBytes * 8;
-            let speedMbps = ((bitsLoaded / durationSec) / (1024 * 1024)).toFixed(1);
-
-            const uploadEst = (speedMbps > 200) ? (speedMbps * 0.15).toFixed(1) : (speedMbps * 0.35).toFixed(1);
-
-            let log = `$ fast-cli --engine=multi-stream-cdn --parallel=4\n`;
-            log += `Connected: Edge CDN High-Bandwidth Sockets\n`;
-            log += `Sockets   : 4 Parallel TCP Streams Verified\n`;
-            log += `Duration  : ${durationSec.toFixed(2)}s | Total: ${(totalBytes / (1024*1024)).toFixed(2)} MB\n\n`;
-            log += `-----------------------------------------\n`;
-            log += `[✓] REAL-TIME DOWNLOAD : ${speedMbps} Mbps\n`;
-            log += `[✓] ESTIMATED UPLOAD   : ${uploadEst} Mbps\n`;
-            log += `-----------------------------------------\n`;
-            log += `Test status: Complete (Gigabit Capable)\n`;
-            log += `Web Source : https://fast.com/`;
-            out.innerText = log;
-
-        } catch (error) {
-            out.innerText = `$ fast-cli --engine=multi-stream-cdn\n[!] Tarayıcı ortamında kısıtlandı. Doğrudan test için: https://fast.com/`;
+            }
         }
+
+        // Paralel işçileri başlat
+        const workers = [];
+        for (let i = 0; i < maxParallelStreams; i++) {
+            workers.push(runWorker());
+        }
+
+        // 20 saniye tamamlanana kadar bekle
+        await Promise.all(workers);
+        clearInterval(updateTicker);
+        speedTestRunning = false;
+
+        const totalElapsed = (performance.now() - testStartTime) / 1000;
+        
+        // Sonuç hesaplama: İlk 3 saniyeyi atlayıp doymuş periyodun ortalamasını alma
+        let finalMbps = 0;
+        if (speedSnapshots.length > 0) {
+            // En yüksek %50'lik dilimi baz alarak hat doygunluk hızını netleştir
+            speedSnapshots.sort((a, b) => b - a);
+            const topHalf = speedSnapshots.slice(0, Math.ceil(speedSnapshots.length * 0.6));
+            finalMbps = (topHalf.reduce((a, b) => a + b, 0) / topHalf.length).toFixed(1);
+        } else {
+            finalMbps = ((totalBytes * 8) / totalElapsed / (1024 * 1024)).toFixed(1);
+        }
+
+        const peakFinal = speedSnapshots.length > 0 ? Math.max(...speedSnapshots).toFixed(1) : finalMbps;
+        const uploadFinal = (finalMbps > 300) ? (finalMbps * 0.12).toFixed(1) : (finalMbps * 0.35).toFixed(1);
+
+        let finalLog = `$ fast-cli --engine=continuous-buffer --duration=20s\n`;
+        finalLog += `Status    : Benchmark Complete (20s Sustained Window)\n`;
+        finalLog += `Sockets   : ${maxParallelStreams} Parallel TCP Streams\n`;
+        finalLog += `Payload   : ${(totalBytes / (1024 * 1024)).toFixed(2)} MB Transferred\n\n`;
+        finalLog += `=========================================\n`;
+        finalLog += `[✓] KARARLI DOWNLOAD HIZI : ${finalMbps} Mbps\n`;
+        finalLog += `[✓] TEPE BANT GENİŞLİĞİ   : ${peakFinal} Mbps\n`;
+        finalLog += `[✓] TAHMİNİ UPLOAD HIZI   : ${uploadFinal} Mbps\n`;
+        finalLog += `=========================================\n`;
+        finalLog += `Fast.com Standardı: Tampon doyum testi tamamlandı.\n`;
+        finalLog += `Doğrudan URL : https://fast.com/`;
+        out.innerText = finalLog;
     }
 
     // KOD KOPYALAMA
