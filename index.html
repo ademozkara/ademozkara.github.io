@@ -7,11 +7,12 @@
     <style>
         :root {
             --bg-base: #03060a;
-            --panel-bg: rgba(7, 13, 22, 0.85);
+            --panel-bg: rgba(7, 13, 22, 0.88);
             --neon-green: #00ff66;
             --neon-cyan: #38bdf8;
-            --text-dim: #74859a;
-            --border-line: rgba(56, 189, 248, 0.16);
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+            --border-line: rgba(56, 189, 248, 0.22);
             --alert-red: #f43f5e;
         }
 
@@ -22,16 +23,17 @@
             padding: 0;
             background-color: var(--bg-base);
             font-family: 'Courier New', Courier, monospace;
-            color: #e2e8f0;
+            color: var(--text-main);
             min-height: 100vh;
             overflow-x: hidden;
-            overflow-y: auto; /* Kaydırma aktif */
+            overflow-y: auto;
+            font-size: 15px; /* Temel yazı boyutu büyütüldü */
         }
 
         /* Özel Siber Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #03060a; }
-        ::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.25); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.35); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--neon-green); }
 
         #matrix-canvas {
@@ -56,66 +58,73 @@
         }
         .auth-card {
             background: #09111c;
-            border: 1px solid var(--neon-green);
-            padding: 30px;
+            border: 1.5px solid var(--neon-green);
+            padding: 35px;
             width: 90%;
-            max-width: 380px;
-            box-shadow: 0 0 35px rgba(0, 255, 102, 0.15);
+            max-width: 420px;
+            box-shadow: 0 0 35px rgba(0, 255, 102, 0.2);
         }
         .auth-header {
             color: var(--neon-green);
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             border-bottom: 1px dashed var(--border-line);
-            padding-bottom: 8px;
+            padding-bottom: 10px;
             text-align: center;
+            letter-spacing: 1px;
         }
         .auth-label {
             display: flex;
             justify-content: space-between;
-            font-size: 11px;
+            font-size: 13px;
             color: var(--neon-cyan);
-            margin-bottom: 6px;
+            margin-bottom: 8px;
+            font-weight: bold;
         }
         .auth-input {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
+            padding: 12px 14px;
+            margin-bottom: 18px;
             background: #04080e;
             border: 1px solid var(--border-line);
             color: #fff;
             font-family: inherit;
-            font-size: 13px;
+            font-size: 15px;
             outline: none;
+            transition: border-color 0.2s;
         }
         .auth-input:focus { border-color: var(--neon-cyan); }
         .auth-btn {
             width: 100%;
-            padding: 10px;
-            background: rgba(0, 255, 102, 0.08);
-            border: 1px solid var(--neon-green);
+            padding: 13px;
+            background: rgba(0, 255, 102, 0.1);
+            border: 1.5px solid var(--neon-green);
             color: var(--neon-green);
             font-family: inherit;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s;
         }
-        .auth-btn:hover { background: rgba(0, 255, 102, 0.2); }
+        .auth-btn:hover { background: rgba(0, 255, 102, 0.25); box-shadow: 0 0 15px rgba(0, 255, 102, 0.4); }
         #auth-error {
             display: none;
             color: var(--alert-red);
-            font-size: 11px;
-            margin-top: 10px;
+            font-size: 13px;
+            margin-top: 14px;
             text-align: center;
+            font-weight: bold;
         }
 
         /* ANA SAYFA İÇERİĞİ */
         .workspace {
             position: relative;
             z-index: 2;
-            padding: 25px;
-            max-width: 1500px;
+            padding: 25px 30px;
+            max-width: 1600px;
             margin: 0 auto;
         }
 
@@ -127,40 +136,44 @@
             align-items: center;
             background: var(--panel-bg);
             border: 1px solid var(--border-line);
-            padding: 12px 20px;
+            padding: 14px 22px;
             margin-bottom: 20px;
-            font-size: 12px;
-            gap: 10px;
+            font-size: 14px;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
         .telemetry-item span { color: var(--neon-cyan); font-weight: bold; }
         .lock-btn {
             background: transparent;
             border: 1px solid var(--alert-red);
             color: var(--alert-red);
-            padding: 4px 10px;
+            padding: 6px 14px;
             font-family: inherit;
-            font-size: 11px;
+            font-size: 13px;
+            font-weight: bold;
             cursor: pointer;
+            transition: all 0.2s;
         }
-        .lock-btn:hover { background: rgba(244, 63, 94, 0.15); }
+        .lock-btn:hover { background: rgba(244, 63, 94, 0.2); }
 
         /* ARAMA VE KOMUT SATIRI */
         .cmd-bar {
             display: flex;
             align-items: center;
             background: var(--panel-bg);
-            border: 1px solid var(--neon-green);
-            padding: 10px 16px;
+            border: 1.5px solid var(--neon-green);
+            padding: 12px 18px;
             margin-bottom: 25px;
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.15);
         }
-        .cmd-prompt { color: var(--neon-green); margin-right: 10px; font-weight: bold; font-size: 13px; }
+        .cmd-prompt { color: var(--neon-green); margin-right: 12px; font-weight: bold; font-size: 15px; }
         .cmd-input {
             flex-grow: 1;
             background: transparent;
             border: none;
             color: #fff;
             font-family: inherit;
-            font-size: 13px;
+            font-size: 15px;
             outline: none;
         }
         .cmd-input::placeholder { color: var(--text-dim); }
@@ -168,92 +181,126 @@
         /* 3 SÜTUNLU HUD IZGARA DÜZENİ */
         .hud-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 22px;
             align-items: start;
         }
         .hud-col {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 18px;
         }
 
         /* MODÜL KARTLARI */
         .module {
             background: var(--panel-bg);
             border: 1px solid var(--border-line);
-            padding: 16px;
+            padding: 20px;
             position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         .module-title {
             color: var(--neon-cyan);
-            font-size: 13px;
+            font-size: 16px;
             font-weight: bold;
-            margin: 0 0 12px 0;
+            margin: 0 0 15px 0;
             border-bottom: 1px dashed var(--border-line);
-            padding-bottom: 6px;
+            padding-bottom: 8px;
             display: flex;
             justify-content: space-between;
+            letter-spacing: 0.5px;
         }
         .module-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
         }
         .nav-link {
             display: flex;
             align-items: baseline;
-            gap: 8px;
-            color: #94a3b8;
+            gap: 10px;
+            color: var(--text-dim);
             text-decoration: none;
-            font-size: 12px;
+            font-size: 14.5px;
             transition: color 0.15s;
             cursor: pointer;
             background: transparent;
             border: none;
-            padding: 0;
+            padding: 2px 0;
             font-family: inherit;
             text-align: left;
+            line-height: 1.4;
         }
-        .nav-link::before { content: "▸"; color: var(--neon-green); font-size: 11px; }
+        .nav-link::before { content: "▸"; color: var(--neon-green); font-size: 14px; }
         .nav-link:hover { color: #fff; }
-        .nav-link b { color: #f1f5f9; font-weight: normal; }
-        .nav-link span { color: #475569; font-size: 10px; }
+        .nav-link b { color: #fff; font-weight: 600; font-size: 15px; }
+        .nav-link span { color: #64748b; font-size: 12.5px; }
 
-        /* DİNAMİK LOG / ÇIKTI KUTUSU */
-        .term-output {
+        /* DİNAMİK KAPATILABİLİR LOG / ÇIKTI KUTUSU */
+        .term-box {
             display: none;
             background: #020408;
             border: 1px solid var(--neon-green);
-            padding: 10px;
+            padding: 14px 16px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+        }
+        .term-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed rgba(0, 255, 102, 0.3);
+            padding-bottom: 6px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: var(--neon-cyan);
+        }
+        .term-close-btn {
+            background: transparent;
+            border: 1px solid var(--alert-red);
+            color: var(--alert-red);
+            padding: 2px 8px;
             font-size: 11px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .term-close-btn:hover { background: var(--alert-red); color: #fff; }
+        .term-content {
+            font-size: 13.5px;
             color: var(--neon-green);
-            margin-top: 8px;
             white-space: pre-wrap;
-            line-height: 1.4;
+            line-height: 1.5;
+            margin: 0;
+            font-family: inherit;
         }
 
         /* KOMUT CHEATSHEET SATIRI */
         .cheat-item {
-            background: rgba(2, 6, 12, 0.6);
-            border: 1px solid rgba(56, 189, 248, 0.1);
-            padding: 6px 10px;
+            background: rgba(2, 6, 12, 0.7);
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            padding: 9px 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 11px;
+            font-size: 13.5px;
+            gap: 10px;
         }
-        .cheat-code { color: var(--neon-green); font-family: inherit; }
+        .cheat-code { color: var(--neon-green); font-family: inherit; font-weight: bold; }
         .copy-btn {
             background: transparent;
             border: 1px solid var(--border-line);
             color: var(--neon-cyan);
-            padding: 2px 6px;
-            font-size: 9px;
+            padding: 4px 8px;
+            font-size: 11px;
             cursor: pointer;
             font-family: inherit;
+            font-weight: bold;
+            flex-shrink: 0;
+            transition: all 0.15s;
         }
-        .copy-btn:hover { border-color: var(--neon-green); color: var(--neon-green); }
+        .copy-btn:hover { border-color: var(--neon-green); color: var(--neon-green); background: rgba(0, 255, 102, 0.1); }
     </style>
 </head>
 <body>
@@ -288,7 +335,7 @@
     
     <!-- ÜST BİLGİ VE TELEMETRİ -->
     <div class="telemetry-bar">
-        <div class="telemetry-item">NODE: <span>C2-OPERATOR</span></div>
+        <div class="telemetry-item">NODE: <span>by anka</span></div>
         <div class="telemetry-item">PUBLIC_IP: <span id="ip-display">Sorgulanıyor...</span></div>
         <div class="telemetry-item">STATUS: <span>ONLINE // ACTIVE</span></div>
         <button class="lock-btn" onclick="terminateSession()">[ TERMINATE_LOCK ]</button>
@@ -297,7 +344,7 @@
     <!-- KOMUT SATIRI VE ANLIK FİLTRELEME -->
     <div class="cmd-bar">
         <span class="cmd-prompt">$ grep -i / exec:</span>
-        <input type="text" id="filter-box" class="cmd-input" placeholder="Filtrelemek için kelime yazın veya ping / speedtest komutlarını çalıştırın..." oninput="applyFilter()">
+        <input type="text" id="filter-box" class="cmd-input" placeholder="Filtrelemek için kelime yazın veya araç arayın..." oninput="applyFilter()">
     </div>
 
     <!-- 3 SÜTUNLU HUD IZGARA -->
@@ -310,11 +357,23 @@
             <div class="module">
                 <div class="module-title"><span>system_diagnostics/</span><span>[DIAG]</span></div>
                 <div class="module-list">
-                    <button class="nav-link" onclick="runPingTest()"><b>sh_run_ping_test</b> <span>// Hedef IP/domain ICMP testi</span></button>
-                    <div id="ping-log" class="term-output"></div>
+                    <button class="nav-link" onclick="togglePingTest()"><b>sh_run_ping_test</b> <span>// Hedef IP/domain ICMP testi</span></button>
+                    <div id="ping-box" class="term-box">
+                        <div class="term-header">
+                            <span>PING LOG CONSOLE</span>
+                            <button class="term-close-btn" onclick="closeBox('ping-box')">[X KAPAT]</button>
+                        </div>
+                        <pre id="ping-log" class="term-content"></pre>
+                    </div>
 
-                    <button class="nav-link" onclick="runSpeedTest()"><b>sh_run_speed_test</b> <span>// Ağ bant genişliği testi</span></button>
-                    <div id="speed-log" class="term-output"></div>
+                    <button class="nav-link" onclick="toggleSpeedTest()"><b>sh_run_speed_test</b> <span>// Ağ bant genişliği testi</span></button>
+                    <div id="speed-box" class="term-box">
+                        <div class="term-header">
+                            <span>BANDWIDTH TEST CONSOLE</span>
+                            <button class="term-close-btn" onclick="closeBox('speed-box')">[X KAPAT]</button>
+                        </div>
+                        <pre id="speed-log" class="term-content"></pre>
+                    </div>
                 </div>
             </div>
 
@@ -474,14 +533,27 @@
         .then(data => { document.getElementById('ip-display').innerText = data.ip; })
         .catch(() => { document.getElementById('ip-display').innerText = '0.0.0.0 (Offline)'; });
 
-    // PING TESTİ
-    function runPingTest() {
+    // PENCERE KAPATMA FONKSİYONU
+    function closeBox(boxId) {
+        document.getElementById(boxId).style.display = 'none';
+    }
+
+    // PING TESTİ (AÇ / KAPAT - TOGGLE)
+    function togglePingTest() {
+        const box = document.getElementById('ping-box');
         const out = document.getElementById('ping-log');
+
+        // Açıksa tıklandığında doğrudan kapat
+        if (box.style.display === 'block') {
+            box.style.display = 'none';
+            return;
+        }
+
         let target = prompt("Sorgulanacak Hedef IP / Domain:", "192.168.1.1");
         if (!target) return;
         target = target.trim();
 
-        out.style.display = 'block';
+        box.style.display = 'block';
         out.innerText = `$ ping -c 4 ${target}\n[KONTROL EDİLİYOR - ICMP PAKETLERİ GÖNDERİLİYOR...]`;
 
         const start = performance.now();
@@ -495,10 +567,18 @@
             });
     }
 
-    // SPEEDTEST
-    function runSpeedTest() {
+    // SPEEDTEST (AÇ / KAPAT - TOGGLE)
+    function toggleSpeedTest() {
+        const box = document.getElementById('speed-box');
         const out = document.getElementById('speed-log');
-        out.style.display = 'block';
+
+        // Açıksa tıklandığında doğrudan kapat
+        if (box.style.display === 'block') {
+            box.style.display = 'none';
+            return;
+        }
+
+        box.style.display = 'block';
         out.innerText = "$ speedtest-cli --secure\n[İŞLEM BAŞLATILDI - TEST EDİLİYOR...]";
 
         setTimeout(() => {
