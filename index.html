@@ -10,9 +10,9 @@
             --panel-bg: rgba(7, 13, 22, 0.88);
             --neon-green: #00ff66;
             --neon-cyan: #38bdf8;
-            --text-main: #f1f5f9;
+            --text-main: #e2e8f0;
             --text-dim: #94a3b8;
-            --border-line: rgba(56, 189, 248, 0.22);
+            --border-line: rgba(56, 189, 248, 0.2);
             --alert-red: #f43f5e;
         }
 
@@ -27,13 +27,13 @@
             min-height: 100vh;
             overflow-x: hidden;
             overflow-y: auto;
-            font-size: 15px; /* Temel yazı boyutu büyütüldü */
+            font-size: 13.5px; /* Dengeli ve şık boyut */
         }
 
         /* Özel Siber Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #03060a; }
-        ::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.35); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.3); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--neon-green); }
 
         #matrix-canvas {
@@ -44,7 +44,7 @@
             pointer-events: none;
         }
 
-        /* KİMLİK DOĞRULAMA PENCERESİ */
+        /* KİMLİK DOĞRULAMA */
         #auth-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -59,72 +59,72 @@
         .auth-card {
             background: #09111c;
             border: 1.5px solid var(--neon-green);
-            padding: 35px;
+            padding: 28px;
             width: 90%;
-            max-width: 420px;
-            box-shadow: 0 0 35px rgba(0, 255, 102, 0.2);
+            max-width: 380px;
+            box-shadow: 0 0 30px rgba(0, 255, 102, 0.18);
         }
         .auth-header {
             color: var(--neon-green);
-            font-size: 18px;
+            font-size: 15px;
             font-weight: bold;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             border-bottom: 1px dashed var(--border-line);
-            padding-bottom: 10px;
+            padding-bottom: 8px;
             text-align: center;
             letter-spacing: 1px;
         }
         .auth-label {
             display: flex;
             justify-content: space-between;
-            font-size: 13px;
+            font-size: 11.5px;
             color: var(--neon-cyan);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: bold;
         }
         .auth-input {
             width: 100%;
-            padding: 12px 14px;
-            margin-bottom: 18px;
+            padding: 10px 12px;
+            margin-bottom: 15px;
             background: #04080e;
             border: 1px solid var(--border-line);
             color: #fff;
             font-family: inherit;
-            font-size: 15px;
+            font-size: 13.5px;
             outline: none;
             transition: border-color 0.2s;
         }
         .auth-input:focus { border-color: var(--neon-cyan); }
         .auth-btn {
             width: 100%;
-            padding: 13px;
+            padding: 10px;
             background: rgba(0, 255, 102, 0.1);
             border: 1.5px solid var(--neon-green);
             color: var(--neon-green);
             font-family: inherit;
-            font-size: 15px;
+            font-size: 13.5px;
             font-weight: bold;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 1px;
             transition: all 0.2s;
         }
-        .auth-btn:hover { background: rgba(0, 255, 102, 0.25); box-shadow: 0 0 15px rgba(0, 255, 102, 0.4); }
+        .auth-btn:hover { background: rgba(0, 255, 102, 0.25); box-shadow: 0 0 12px rgba(0, 255, 102, 0.35); }
         #auth-error {
             display: none;
             color: var(--alert-red);
-            font-size: 13px;
-            margin-top: 14px;
+            font-size: 11.5px;
+            margin-top: 10px;
             text-align: center;
             font-weight: bold;
         }
 
-        /* ANA SAYFA İÇERİĞİ */
+        /* ANA ÇALIŞMA ALANI */
         .workspace {
             position: relative;
             z-index: 2;
-            padding: 25px 30px;
-            max-width: 1600px;
+            padding: 20px 24px;
+            max-width: 1500px;
             margin: 0 auto;
         }
 
@@ -136,20 +136,27 @@
             align-items: center;
             background: var(--panel-bg);
             border: 1px solid var(--border-line);
-            padding: 14px 22px;
-            margin-bottom: 20px;
+            padding: 10px 18px;
+            margin-bottom: 16px;
+            font-size: 12.5px;
+            gap: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+        .telemetry-brand {
+            color: var(--neon-cyan);
+            font-weight: bold;
+            letter-spacing: 1px;
             font-size: 14px;
-            gap: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
         }
         .telemetry-item span { color: var(--neon-cyan); font-weight: bold; }
         .lock-btn {
             background: transparent;
             border: 1px solid var(--alert-red);
             color: var(--alert-red);
-            padding: 6px 14px;
+            padding: 4px 10px;
             font-family: inherit;
-            font-size: 13px;
+            font-size: 11.5px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.2s;
@@ -162,50 +169,49 @@
             align-items: center;
             background: var(--panel-bg);
             border: 1.5px solid var(--neon-green);
-            padding: 12px 18px;
-            margin-bottom: 25px;
-            box-shadow: 0 0 15px rgba(0, 255, 102, 0.15);
+            padding: 9px 14px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 12px rgba(0, 255, 102, 0.12);
         }
-        .cmd-prompt { color: var(--neon-green); margin-right: 12px; font-weight: bold; font-size: 15px; }
+        .cmd-prompt { color: var(--neon-green); margin-right: 10px; font-weight: bold; font-size: 13.5px; }
         .cmd-input {
             flex-grow: 1;
             background: transparent;
             border: none;
             color: #fff;
             font-family: inherit;
-            font-size: 15px;
+            font-size: 13.5px;
             outline: none;
         }
         .cmd-input::placeholder { color: var(--text-dim); }
 
-        /* 3 SÜTUNLU HUD IZGARA DÜZENİ */
+        /* 3 SÜTUNLU HUD IZGARA */
         .hud-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-            gap: 22px;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 18px;
             align-items: start;
         }
         .hud-col {
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 15px;
         }
 
         /* MODÜL KARTLARI */
         .module {
             background: var(--panel-bg);
             border: 1px solid var(--border-line);
-            padding: 20px;
-            position: relative;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            padding: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         .module-title {
             color: var(--neon-cyan);
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
-            margin: 0 0 15px 0;
+            margin: 0 0 12px 0;
             border-bottom: 1px dashed var(--border-line);
-            padding-bottom: 8px;
+            padding-bottom: 6px;
             display: flex;
             justify-content: space-between;
             letter-spacing: 0.5px;
@@ -213,54 +219,99 @@
         .module-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px;
+        }
+
+        /* LİNK ÖĞELERİ VE İNCELEME YAPISI */
+        .link-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
         }
         .nav-link {
             display: flex;
             align-items: baseline;
-            gap: 10px;
+            justify-content: space-between;
             color: var(--text-dim);
             text-decoration: none;
-            font-size: 14.5px;
-            transition: color 0.15s;
+            font-size: 13px;
             cursor: pointer;
             background: transparent;
             border: none;
-            padding: 2px 0;
+            padding: 3px 0;
             font-family: inherit;
             text-align: left;
-            line-height: 1.4;
+            line-height: 1.35;
+            transition: color 0.15s;
         }
-        .nav-link::before { content: "▸"; color: var(--neon-green); font-size: 14px; }
         .nav-link:hover { color: #fff; }
-        .nav-link b { color: #fff; font-weight: 600; font-size: 15px; }
-        .nav-link span { color: #64748b; font-size: 12.5px; }
+        .nav-link-left {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+        .nav-link-left::before { content: "▸"; color: var(--neon-green); font-size: 12px; }
+        .nav-link b { color: #fff; font-weight: 600; font-size: 13.5px; }
+        .nav-link span { color: #64748b; font-size: 11px; }
 
-        /* DİNAMİK KAPATILABİLİR LOG / ÇIKTI KUTUSU */
+        /* LİNK GÖSTERİCİ ROZET */
+        .inspect-badge {
+            font-size: 10px;
+            color: var(--neon-cyan);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 1px 5px;
+            border-radius: 2px;
+            opacity: 0.6;
+            transition: all 0.15s;
+            text-decoration: none;
+            margin-left: 8px;
+            white-space: nowrap;
+        }
+        .inspect-badge:hover {
+            opacity: 1;
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            background: rgba(0, 255, 102, 0.08);
+        }
+
+        /* TIKLANDIĞINDA AÇILAN CANLI URL BİLGİ ŞERİDİ */
+        .url-preview {
+            display: none;
+            font-size: 11px;
+            color: var(--neon-cyan);
+            background: rgba(2, 6, 12, 0.8);
+            border-left: 2px solid var(--neon-cyan);
+            padding: 4px 8px;
+            margin-left: 14px;
+            word-break: break-all;
+            user-select: all;
+        }
+
+        /* DİNAMİK LOG / ÇIKTI KUTUSU */
         .term-box {
             display: none;
             background: #020408;
             border: 1px solid var(--neon-green);
-            padding: 14px 16px;
-            margin-top: 10px;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+            padding: 12px 14px;
+            margin-top: 8px;
+            box-shadow: inset 0 0 12px rgba(0,0,0,0.8);
         }
         .term-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px dashed rgba(0, 255, 102, 0.3);
-            padding-bottom: 6px;
-            margin-bottom: 10px;
-            font-size: 12px;
+            padding-bottom: 5px;
+            margin-bottom: 8px;
+            font-size: 11px;
             color: var(--neon-cyan);
         }
         .term-close-btn {
             background: transparent;
             border: 1px solid var(--alert-red);
             color: var(--alert-red);
-            padding: 2px 8px;
-            font-size: 11px;
+            padding: 1px 6px;
+            font-size: 10px;
             font-family: inherit;
             font-weight: bold;
             cursor: pointer;
@@ -268,10 +319,10 @@
         }
         .term-close-btn:hover { background: var(--alert-red); color: #fff; }
         .term-content {
-            font-size: 13.5px;
+            font-size: 12.5px;
             color: var(--neon-green);
             white-space: pre-wrap;
-            line-height: 1.5;
+            line-height: 1.45;
             margin: 0;
             font-family: inherit;
         }
@@ -280,20 +331,20 @@
         .cheat-item {
             background: rgba(2, 6, 12, 0.7);
             border: 1px solid rgba(56, 189, 248, 0.15);
-            padding: 9px 12px;
+            padding: 7px 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 13.5px;
-            gap: 10px;
+            font-size: 12.5px;
+            gap: 8px;
         }
         .cheat-code { color: var(--neon-green); font-family: inherit; font-weight: bold; }
         .copy-btn {
             background: transparent;
             border: 1px solid var(--border-line);
             color: var(--neon-cyan);
-            padding: 4px 8px;
-            font-size: 11px;
+            padding: 3px 6px;
+            font-size: 10px;
             cursor: pointer;
             font-family: inherit;
             font-weight: bold;
@@ -335,7 +386,7 @@
     
     <!-- ÜST BİLGİ VE TELEMETRİ -->
     <div class="telemetry-bar">
-        <div class="telemetry-item">NODE: <span>by anka</span></div>
+        <div class="telemetry-brand">by anka</div>
         <div class="telemetry-item">PUBLIC_IP: <span id="ip-display">Sorgulanıyor...</span></div>
         <div class="telemetry-item">STATUS: <span>ONLINE // ACTIVE</span></div>
         <button class="lock-btn" onclick="terminateSession()">[ TERMINATE_LOCK ]</button>
@@ -344,7 +395,7 @@
     <!-- KOMUT SATIRI VE ANLIK FİLTRELEME -->
     <div class="cmd-bar">
         <span class="cmd-prompt">$ grep -i / exec:</span>
-        <input type="text" id="filter-box" class="cmd-input" placeholder="Filtrelemek için kelime yazın veya araç arayın..." oninput="applyFilter()">
+        <input type="text" id="filter-box" class="cmd-input" placeholder="Filtrelemek için kelime yazın..." oninput="applyFilter()">
     </div>
 
     <!-- 3 SÜTUNLU HUD IZGARA -->
@@ -357,22 +408,32 @@
             <div class="module">
                 <div class="module-title"><span>system_diagnostics/</span><span>[DIAG]</span></div>
                 <div class="module-list">
-                    <button class="nav-link" onclick="togglePingTest()"><b>sh_run_ping_test</b> <span>// Hedef IP/domain ICMP testi</span></button>
-                    <div id="ping-box" class="term-box">
-                        <div class="term-header">
-                            <span>PING LOG CONSOLE</span>
-                            <button class="term-close-btn" onclick="closeBox('ping-box')">[X KAPAT]</button>
+                    <div class="link-wrapper">
+                        <button class="nav-link" onclick="togglePingTest()">
+                            <div class="nav-link-left"><b>sh_run_ping_test</b> <span>// Hedef IP/domain ICMP testi</span></div>
+                            <span class="inspect-badge">[EXEC]</span>
+                        </button>
+                        <div id="ping-box" class="term-box">
+                            <div class="term-header">
+                                <span>PING LOG CONSOLE</span>
+                                <button class="term-close-btn" onclick="closeBox('ping-box')">[X KAPAT]</button>
+                            </div>
+                            <pre id="ping-log" class="term-content"></pre>
                         </div>
-                        <pre id="ping-log" class="term-content"></pre>
                     </div>
 
-                    <button class="nav-link" onclick="toggleSpeedTest()"><b>sh_run_speed_test</b> <span>// Ağ bant genişliği testi</span></button>
-                    <div id="speed-box" class="term-box">
-                        <div class="term-header">
-                            <span>BANDWIDTH TEST CONSOLE</span>
-                            <button class="term-close-btn" onclick="closeBox('speed-box')">[X KAPAT]</button>
+                    <div class="link-wrapper">
+                        <button class="nav-link" onclick="toggleSpeedTest()">
+                            <div class="nav-link-left"><b>sh_run_speed_test</b> <span>// Ağ bant genişliği testi</span></div>
+                            <span class="inspect-badge">[EXEC]</span>
+                        </button>
+                        <div id="speed-box" class="term-box">
+                            <div class="term-header">
+                                <span>BANDWIDTH TEST CONSOLE</span>
+                                <button class="term-close-btn" onclick="closeBox('speed-box')">[X KAPAT]</button>
+                            </div>
+                            <pre id="speed-log" class="term-content"></pre>
                         </div>
-                        <pre id="speed-log" class="term-content"></pre>
                     </div>
                 </div>
             </div>
@@ -381,12 +442,55 @@
             <div class="module">
                 <div class="module-title"><span>dns_network_ops/</span><span>[NET]</span></div>
                 <div class="module-list">
-                    <a href="https://mxtoolbox.com/SuperTool.aspx" target="_blank" class="nav-link"><b>MXToolbox SuperTool</b> <span>// DNS/MX/SPF analiz</span></a>
-                    <a href="https://bgp.he.net/" target="_blank" class="nav-link"><b>Hurricane Electric BGP</b> <span>// IP & ASN routing haritası</span></a>
-                    <a href="https://www.wireguard.com/install/" target="_blank" class="nav-link"><b>WireGuard VPN</b> <span>// Hızlı şifreli tünelleme</span></a>
-                    <a href="https://www.wireshark.org/download.html" target="_blank" class="nav-link"><b>Wireshark</b> <span>// Paket analiz motoru</span></a>
-                    <a href="https://nmap.org/download.html" target="_blank" class="nav-link"><b>Nmap / Zenmap</b> <span>// Ağ keşif ve port tarama</span></a>
-                    <a href="https://www.advanced-ip-scanner.com/tr/" target="_blank" class="nav-link"><b>Advanced IP Scanner</b> <span>// LAN tarama aracı</span></a>
+                    
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>MXToolbox SuperTool</b> <span>// DNS/MX/SPF analiz</span></div>
+                            <a href="https://mxtoolbox.com/SuperTool.aspx" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://mxtoolbox.com/SuperTool.aspx</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>Hurricane Electric BGP</b> <span>// IP & ASN routing haritası</span></div>
+                            <a href="https://bgp.he.net/" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://bgp.he.net/</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>WireGuard VPN</b> <span>// Hızlı şifreli tünelleme</span></div>
+                            <a href="https://www.wireguard.com/install/" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://www.wireguard.com/install/</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>Wireshark</b> <span>// Paket analiz motoru</span></div>
+                            <a href="https://www.wireshark.org/download.html" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://www.wireshark.org/download.html</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>Nmap / Zenmap</b> <span>// Ağ keşif ve port tarama</span></div>
+                            <a href="https://nmap.org/download.html" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://nmap.org/download.html</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>Advanced IP Scanner</b> <span>// LAN tarama aracı</span></div>
+                            <a href="https://www.advanced-ip-scanner.com/tr/" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://www.advanced-ip-scanner.com/tr/</div>
+                    </div>
+
                 </div>
             </div>
 
@@ -394,7 +498,13 @@
             <div class="module">
                 <div class="module-title"><span>industrial_firmware/</span><span>[IOT]</span></div>
                 <div class="module-list">
-                    <a href="https://github.com/" target="_blank" class="nav-link"><b>Router_Configs</b> <span>// Endüstriyel APN & modem arşivi</span></a>
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>Router_Configs</b> <span>// Endüstriyel APN & modem arşivi</span></div>
+                            <a href="https://github.com/" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://github.com/</div>
+                    </div>
                 </div>
             </div>
 
@@ -434,11 +544,45 @@
             <div class="module">
                 <div class="module-title"><span>ad_domain_labs/</span><span>[AD_SEC]</span></div>
                 <div class="module-list">
-                    <a href="https://github.com/BloodHoundAD/BloodHound" target="_blank" class="nav-link"><b>BloodHound & SharpHound</b> <span>// AD yetki yolu analizi</span></a>
-                    <a href="https://learn.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite" target="_blank" class="nav-link"><b>Sysinternals Suite</b> <span>// Windows iç yapı ve süreç teşhisi</span></a>
-                    <a href="https://learn.microsoft.com/en-us/troubleshoot/windows-server/system-management-components/remote-server-administration-tools" target="_blank" class="nav-link"><b>RSAT Tools</b> <span>// Uzak sunucu yönetim konsolları</span></a>
-                    <a href="https://github.com/gentilkiwi/mimikatz" target="_blank" class="nav-link"><b>Mimikatz</b> <span>// Kimlik ve bilet analizi</span></a>
-                    <a href="https://learn.microsoft.com/en-us/windows-server/identity/laps/laps-overview" target="_blank" class="nav-link"><b>Microsoft LAPS</b> <span>// Yerel yönetici şifre çözümü</span></a>
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>BloodHound & SharpHound</b> <span>// AD yetki yolu analizi</span></div>
+                            <a href="https://github.com/BloodHoundAD/BloodHound" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://github.com/BloodHoundAD/BloodHound</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>Sysinternals Suite</b> <span>// Windows iç yapı ve süreç teşhisi</span></div>
+                            <a href="https://learn.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://learn.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>RSAT Tools</b> <span>// Uzak sunucu yönetim konsolları</span></div>
+                            <a href="https://learn.microsoft.com/en-us/troubleshoot/windows-server/system-management-components/remote-server-administration-tools" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://learn.microsoft.com/en-us/troubleshoot/windows-server/system-management-components/remote-server-administration-tools</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>Mimikatz</b> <span>// Kimlik ve bilet analizi</span></div>
+                            <a href="https://github.com/gentilkiwi/mimikatz" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://github.com/gentilkiwi/mimikatz</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>Microsoft LAPS</b> <span>// Yerel yönetici şifre çözümü</span></div>
+                            <a href="https://learn.microsoft.com/en-us/windows-server/identity/laps/laps-overview" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://learn.microsoft.com/en-us/windows-server/identity/laps/laps-overview</div>
+                    </div>
                 </div>
             </div>
 
@@ -446,8 +590,21 @@
             <div class="module">
                 <div class="module-title"><span>database_engines/</span><span>[DATA]</span></div>
                 <div class="module-list">
-                    <a href="https://www.microsoft.com/en-us/sql-server/sql-server-downloads" target="_blank" class="nav-link"><b>MS SQL Server</b> <span>// Kurumsal veritabanı motoru</span></a>
-                    <a href="https://dev.mysql.com/downloads/installer/" target="_blank" class="nav-link"><b>MySQL Installer</b> <span>// Açık kaynak RDBMS</span></a>
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>MS SQL Server</b> <span>// Kurumsal veritabanı motoru</span></div>
+                            <a href="https://www.microsoft.com/en-us/sql-server/sql-server-downloads" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://www.microsoft.com/en-us/sql-server/sql-server-downloads</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>MySQL Installer</b> <span>// Açık kaynak RDBMS</span></div>
+                            <a href="https://dev.mysql.com/downloads/installer/" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://dev.mysql.com/downloads/installer/</div>
+                    </div>
                 </div>
             </div>
 
@@ -460,11 +617,45 @@
             <div class="module">
                 <div class="module-title"><span>vulnerability_labs/</span><span>[EXPLOIT]</span></div>
                 <div class="module-list">
-                    <a href="https://portswigger.net/burp/communitydownload" target="_blank" class="nav-link"><b>Burp Suite CE</b> <span>// Web trafik ve güvenlik testi</span></a>
-                    <a href="https://github.com/rapid7/metasploit-framework/wiki/Nightly-Installers" target="_blank" class="nav-link"><b>Metasploit</b> <span>// Exploit framework</span></a>
-                    <a href="https://sourceforge.net/projects/metasploitable/" target="_blank" class="nav-link"><b>Metasploitable</b> <span>// Zafiyetli test laboratuvarı</span></a>
-                    <a href="https://github.com/digininja/DVWA" target="_blank" class="nav-link"><b>DVWA</b> <span>// Web güvenlik laboratuvarı</span></a>
-                    <a href="https://gchq.github.io/CyberChef/" target="_blank" class="nav-link"><b>CyberChef</b> <span>// Kripto & veri dönüştürücü</span></a>
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>Burp Suite CE</b> <span>// Web trafik ve güvenlik testi</span></div>
+                            <a href="https://portswigger.net/burp/communitydownload" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://portswigger.net/burp/communitydownload</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>Metasploit</b> <span>// Exploit framework</span></div>
+                            <a href="https://github.com/rapid7/metasploit-framework/wiki/Nightly-Installers" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://github.com/rapid7/metasploit-framework/wiki/Nightly-Installers</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>Metasploitable</b> <span>// Zafiyetli test laboratuvarı</span></div>
+                            <a href="https://sourceforge.net/projects/metasploitable/" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://sourceforge.net/projects/metasploitable/</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>DVWA</b> <span>// Web güvenlik laboratuvarı</span></div>
+                            <a href="https://github.com/digininja/DVWA" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://github.com/digininja/DVWA</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>CyberChef</b> <span>// Kripto & veri dönüştürücü</span></div>
+                            <a href="https://gchq.github.io/CyberChef/" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://gchq.github.io/CyberChef/</div>
+                    </div>
                 </div>
             </div>
 
@@ -472,11 +663,45 @@
             <div class="module">
                 <div class="module-title"><span>operating_systems/</span><span>[INFRA]</span></div>
                 <div class="module-list">
-                    <a href="https://docs.google.com/uc?export=download&id=1bbRk2Lt4OFr1NksBb-5wA1gaBDs7rpVd" class="nav-link"><b>VMware Workstation</b> <span>// Hipervizör setup paketi</span></a>
-                    <a href="https://www.kali.org/get-kali/" target="_blank" class="nav-link"><b>Kali Linux</b> <span>// Pentest işletim sistemi</span></a>
-                    <a href="https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022" target="_blank" class="nav-link"><b>Windows Server ISO</b> <span>// Active Directory imajı</span></a>
-                    <a href="https://www.microsoft.com/tr-tr/software-download/windows10ISO" target="_blank" class="nav-link"><b>Windows 10 ISO</b> <span>// İstemci test imajı</span></a>
-                    <a href="https://www.pfsense.org/download/" target="_blank" class="nav-link"><b>pfSense Firewall</b> <span>// Sanal firewall ISO</span></a>
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>VMware Workstation</b> <span>// Hipervizör setup paketi</span></div>
+                            <a href="https://docs.google.com/uc?export=download&id=1bbRk2Lt4OFr1NksBb-5wA1gaBDs7rpVd" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://docs.google.com/uc?export=download&id=1bbRk2Lt4OFr1NksBb-5wA1gaBDs7rpVd</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>Kali Linux</b> <span>// Pentest işletim sistemi</span></div>
+                            <a href="https://www.kali.org/get-kali/" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://www.kali.org/get-kali/</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>Windows Server ISO</b> <span>// Active Directory imajı</span></div>
+                            <a href="https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>Windows 10 ISO</b> <span>// İstemci test imajı</span></div>
+                            <a href="https://www.microsoft.com/tr-tr/software-download/windows10ISO" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://www.microsoft.com/tr-tr/software-download/windows10ISO</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>pfSense Firewall</b> <span>// Sanal firewall ISO</span></div>
+                            <a href="https://www.pfsense.org/download/" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://www.pfsense.org/download/</div>
+                    </div>
                 </div>
             </div>
 
@@ -484,11 +709,45 @@
             <div class="module">
                 <div class="module-title"><span>remote_and_tools/</span><span>[REMOTE]</span></div>
                 <div class="module-list">
-                    <a href="https://www.putty.org/" target="_blank" class="nav-link"><b>PuTTY</b> <span>// SSH / Seri port istemcisi</span></a>
-                    <a href="https://mobaxterm.mobatek.net/download.html" target="_blank" class="nav-link"><b>MobaXterm</b> <span>// Gelişmiş X11 ve SSH terminali</span></a>
-                    <a href="https://anydesk.com/tr/downloads/windows" target="_blank" class="nav-link"><b>AnyDesk</b> <span>// Uzak masaüstü</span></a>
-                    <a href="https://rufus.ie/tr/" target="_blank" class="nav-link"><b>Rufus</b> <span>// Bootable USB hazırlayıcı</span></a>
-                    <a href="https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user" target="_blank" class="nav-link"><b>VS Code</b> <span>// Script geliştirme ortamı</span></a>
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>PuTTY</b> <span>// SSH / Seri port istemcisi</span></div>
+                            <a href="https://www.putty.org/" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://www.putty.org/</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>MobaXterm</b> <span>// Gelişmiş X11 ve SSH terminali</span></div>
+                            <a href="https://mobaxterm.mobatek.net/download.html" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://mobaxterm.mobatek.net/download.html</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>AnyDesk</b> <span>// Uzak masaüstü</span></div>
+                            <a href="https://anydesk.com/tr/downloads/windows" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://anydesk.com/tr/downloads/windows</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>Rufus</b> <span>// Bootable USB hazırlayıcı</span></div>
+                            <a href="https://rufus.ie/tr/" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://rufus.ie/tr/</div>
+                    </div>
+
+                    <div class="link-wrapper">
+                        <div class="nav-link" onclick="toggleUrlPreview(this)">
+                            <div class="nav-link-left"><b>VS Code</b> <span>// Script geliştirme ortamı</span></div>
+                            <a href="https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user" target="_blank" class="inspect-badge" onclick="event.stopPropagation()">AÇ ↗</a>
+                        </div>
+                        <div class="url-preview">URL: https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user</div>
+                    </div>
                 </div>
             </div>
 
@@ -533,7 +792,15 @@
         .then(data => { document.getElementById('ip-display').innerText = data.ip; })
         .catch(() => { document.getElementById('ip-display').innerText = '0.0.0.0 (Offline)'; });
 
-    // PENCERE KAPATMA FONKSİYONU
+    // LİNK İNCELEME (TOGGLE URL)
+    function toggleUrlPreview(linkElement) {
+        const preview = linkElement.nextElementSibling;
+        if (preview && preview.classList.contains('url-preview')) {
+            preview.style.display = (preview.style.display === 'block') ? 'none' : 'block';
+        }
+    }
+
+    // PENCERE KAPATMA
     function closeBox(boxId) {
         document.getElementById(boxId).style.display = 'none';
     }
@@ -543,7 +810,6 @@
         const box = document.getElementById('ping-box');
         const out = document.getElementById('ping-log');
 
-        // Açıksa tıklandığında doğrudan kapat
         if (box.style.display === 'block') {
             box.style.display = 'none';
             return;
@@ -572,7 +838,6 @@
         const box = document.getElementById('speed-box');
         const out = document.getElementById('speed-log');
 
-        // Açıksa tıklandığında doğrudan kapat
         if (box.style.display === 'block') {
             box.style.display = 'none';
             return;
@@ -605,13 +870,13 @@
         const modules = document.querySelectorAll('.module');
 
         modules.forEach(mod => {
-            const links = mod.querySelectorAll('.nav-link, .cheat-item');
+            const wrappers = mod.querySelectorAll('.link-wrapper, .cheat-item');
             let hasMatch = false;
 
-            links.forEach(el => {
+            wrappers.forEach(el => {
                 const text = el.innerText.toLowerCase();
                 if (text.includes(q)) {
-                    el.style.display = el.classList.contains('cheat-item') ? 'flex' : 'inline-flex';
+                    el.style.display = el.classList.contains('cheat-item') ? 'flex' : 'flex';
                     hasMatch = true;
                 } else {
                     el.style.display = 'none';
@@ -634,7 +899,7 @@
     window.addEventListener('resize', resize);
 
     const chars = ['0', '1'];
-    const fontSize = 14;
+    const fontSize = 13;
     let cols = canvas.width / fontSize;
     const drops = Array.from({ length: cols }, () => Math.random() * -100);
 
